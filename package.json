@@ -1,0 +1,13 @@
+{
+  "name": "pwdlab",
+  "version": "0.0.1",
+  "scripts": {
+    "client": "cd client && yarn start",
+    "serve": "cd backend && yarn start",
+    "server": "nodemon server.js",
+    "dev": "concurrently --kill-others-on-fail \"yarn serve\" \"yarn client\""
+  },
+  "devDependencies": {
+    "concurrently": "^3.5.0"
+  }
+}
