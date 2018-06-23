@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { simpleAction } from '../../actions/simpleAction'
-import { Layout } from 'antd';
-import 'antd/dist/antd.css';
-
 import './App.css';
 
 const { Header, Footer, Sider, Content } = Layout;
@@ -30,7 +27,7 @@ class App extends Component {
 
   simpleAction = (event) => {
     this.props.simpleAction();
-   }
+  }
 
   render() {
     return (
@@ -38,6 +35,7 @@ class App extends Component {
         <Layout>
           <Header> <h1>Pwdlab</h1></Header>
           <Content>
+          // todo main
             <p className="App-intro">{this.state.response}</p>
             <button onClick={this.simpleAction}>Test redux action</button>
             <pre>
