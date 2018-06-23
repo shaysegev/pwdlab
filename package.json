@@ -1,13 +1,14 @@
 {
-  "name": "pwdlab",
+  "name": "pwdlab-env",
   "version": "0.0.1",
   "scripts": {
-    "client": "cd client && yarn start",
-    "serve": "cd backend && yarn start",
-    "server": "nodemon server.js",
-    "dev": "concurrently --kill-others-on-fail \"yarn serve\" \"yarn client\""
+    "dev_client": "cd client && yarn start",
+    "dev_server": "cd backend && yarn start",
+    "production": "cd backend && cross-env NODE_ENV=prod yarn serve",
+    "dev": "cross-env NODE_ENV=dev concurrently --raw --kill-others --kill-others-on-fail \"yarn dev_client\" \"yarn dev_server\""
   },
   "devDependencies": {
-    "concurrently": "^3.5.0"
+    "concurrently": "^3.5.0",
+    "cross-env": "^5.2.0"
   }
 }
