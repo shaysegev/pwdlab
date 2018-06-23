@@ -2,12 +2,12 @@
   "name": "pwdlab-env",
   "version": "0.0.1",
   "scripts": {
-    "dev-client": "cd client && yarn start",
-    "dev-backend": "cd backend && yarn start",
+    "dev-client": "cd client && cross-env NODE_ENV=dev yarn start",
+    "dev-backend": "cd backend && cross-env NODE_ENV=dev yarn start",
     "update-client": "cd client && npm install && npm run build",
     "update-backend": "cd backend && npm install",
     "production": "cd backend && cross-env NODE_ENV=prod yarn serve",
-    "dev": "cross-env NODE_ENV=dev concurrently --raw --kill-others --kill-others-on-fail \"yarn dev_client\" \"yarn dev_backend\""
+    "dev": "concurrently --raw --kill-others --kill-others-on-fail \"yarn dev-client\" \"yarn dev-backend\""
   },
   "devDependencies": {
     "concurrently": "^3.5.0",
