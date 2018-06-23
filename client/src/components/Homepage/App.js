@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { simpleAction } from '../../actions/simpleAction'
-
-import logo from './logo.svg';
+import { Layout } from 'antd';
+import 'antd/dist/antd.css';
 
 import './App.css';
+
+const { Header, Footer, Sider, Content } = Layout;
 
 class App extends Component {
   state = {
@@ -33,17 +35,19 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">{this.state.response}</p>
-        <button onClick={this.simpleAction}>Test redux action</button>
-        <pre>
-          {
-            JSON.stringify(this.props)
-          }
-        </pre>
+        <Layout>
+          <Header> <h1>Pwdlab</h1></Header>
+          <Content>
+            <p className="App-intro">{this.state.response}</p>
+            <button onClick={this.simpleAction}>Test redux action</button>
+            <pre>
+              {
+                JSON.stringify(this.props)
+              }
+            </pre>
+        </Content>
+          <Footer>Footer</Footer>
+        </Layout>
       </div>
     );
   }
