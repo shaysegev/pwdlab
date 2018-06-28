@@ -5,6 +5,8 @@
   "dependencies": {
     "antd": "^3.6.4",
     "react": "^16.4.1",
+    "react-app-rewire-less": "^2.1.2",
+    "react-app-rewired": "^1.5.2",
     "react-dom": "^16.4.1",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
@@ -13,10 +15,15 @@
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "start": "react-app-rewired start",
+    "build-js": "react-app-rewired build",
+    "test": "react-app-rewired test --env=jsdom",
+    "eject": "react-app-rewired eject"
   },
-  "proxy": "http://localhost:5000/"
+  "proxy": "http://localhost:5000/",
+  "devDependencies": {
+    "less": "2.7.2",
+    "less-loader": "^4.1.0",
+    "node-sass": "^4.9.0"
+  }
 }
