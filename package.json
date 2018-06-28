@@ -4,8 +4,8 @@
   "scripts": {
     "dev-client": "cd client && cross-env NODE_ENV=dev yarn start",
     "dev-backend": "cd backend && cross-env NODE_ENV=dev yarn start",
-    "update-client": "cd client && npm install && npm run build",
-    "update-backend": "cd backend && npm install",
+    "update-client": "cd client && yarn && yarn build",
+    "update-backend": "cd backend && yarn",
     "production": "cd backend && cross-env NODE_ENV=prod yarn serve",
     "dev": "concurrently --raw --kill-others --kill-others-on-fail \"yarn dev-client\" \"yarn dev-backend\""
   },
