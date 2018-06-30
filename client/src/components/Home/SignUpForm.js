@@ -1,8 +1,29 @@
-import React from 'react';
-import { Form, Icon, Input, Button, Checkbox } from 'antd';
-const FormItem = Form.Item;
+import React from 'react'
+import User from 'Models/User'
+import { Form, Icon, Input, Button, Checkbox } from 'antd'
+const FormItem = Form.Item
 
 class SignUpForm extends React.Component {
+  state = {
+    loading: false
+  }
+  
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.setState({ loading: true })
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        const user = new User()
+        user.signUp(values).then((res) => {
+          console.log(res);
+        }).catch((e) => {
+          console.log(e)
+        })
+
+      }
+    });
+  }
+
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
@@ -10,10 +31,10 @@ class SignUpForm extends React.Component {
         <h3>Sign up for free.</h3>
         <Form onSubmit={this.handleSubmit} className="SignUp-form">
           <FormItem>
-            {getFieldDecorator('userName', {
-              rules: [{ required: true, message: 'Please input your username!' }],
+            {getFieldDecorator('email', {
+              rules: [{ required: true, message: 'Please input your email address!' }],
             })(
-              <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Username" />
+              <Input prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="email" />
             )}
           </FormItem>
           <FormItem>
@@ -24,8 +45,12 @@ class SignUpForm extends React.Component {
             )}
           </FormItem>
           <FormItem>
-            {/* todo <a className="login-form-forgot" href="">Forgot password</a> */}
-            <Button type="primary" htmlType="submit" className="login-form-button">
+            <Button 
+              type="primary" 
+              htmlType="submit" 
+              className="login-form-button"
+              loading={this.state.loading} 
+            >
               Register
             </Button>
           </FormItem>

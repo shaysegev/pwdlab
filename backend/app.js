@@ -5,8 +5,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var appRouter = require('./routes');
 
 var app = express();
 
@@ -20,12 +19,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, config.STATIC_FILES)));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-
-app.get('/api/hello', (req, res) => {
-  res.send({ express: 'Hello From Express' });
-});
+app.use('/', appRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
