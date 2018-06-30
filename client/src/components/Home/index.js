@@ -3,6 +3,8 @@ import { Layout } from 'antd'
 import Hero from './Hero'
 import Features from './Features'
 import './Homepage.less'
+import './themeOverides.less'
+import './responsive.less'
 
 const { Header, Footer, Content } = Layout
 
@@ -18,8 +20,10 @@ class App extends Component {
             <Hero />
             <Features />
           </Content>
-          <Footer className="container">
-            Made by Shay Segev | MIT license
+          <Footer>
+            <p className="container">
+              Made by Shay Segev | MIT license
+            </p>
           </Footer>
         </Layout>
       </div>

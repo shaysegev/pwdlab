@@ -2,22 +2,22 @@ import React from 'react'
 import { Row, Col, Icon } from 'antd'
 
 const Features = () => (
-  <div>
-    <Row type="flex" justify="space-between" className="features container">
-      <Col className="features__desc">
+  <div className="features__background">
+    <Row type="flex" gutter={8} justify="space-between" className="features container">
+      <Col md={8} className="features__desc">
         <Icon className="features__icon" type="check-circle-o" />
-        <h2 className="features__title">Lorem, ipsum.</h2>
-        <p className="features__content">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+        <h2 className="features__title">Strong Encryption</h2>
+        <p className="features__content">All encryption keys are unique and stored encrypted, so only you have access to your own passwords.</p>
       </Col>
-      <Col className="features__desc">
+      <Col md={8} className="features__desc">
         <Icon className="features__icon" type="code" />
-        <h2 className="features__title">Lorem, ipsum.</h2>
-        <p className="features__content">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+        <h2 className="features__title">Open Source</h2>
+        <p className="features__content">The software is transparent and licensed under MIT.</p>
       </Col>
-      <Col className="features__desc">
+      <Col md={8} className="features__desc">
         <Icon className="features__icon" type="calculator" />
-        <h2 className="features__title">Lorem, ipsum.</h2>
-        <p className="features__content">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+        <h2 className="features__title">Powerful Passwords</h2>
+        <p className="features__content">Store powerful and safe passwords for each website, so you won't have to remember them ever again.</p>
       </Col>
     </Row>
   </div>

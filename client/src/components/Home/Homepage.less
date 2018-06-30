@@ -1,13 +1,11 @@
 @import "~antd/dist/antd.less";
-@import "themeOverides.less";
+@import "themeOverideVariables.less";
 
 * {
   z-index: 1;
 }
 
-.ant-layout-header {
-  background: #32354f;
-}
+
 
 .container {
   padding: 0 50px;
@@ -22,8 +20,7 @@
 }
 
 .hero {
-  height: 70vh;
-  padding-top: 50px;
+  padding: 3rem 0 9rem;
 }
 
 .hero__forms {
@@ -54,24 +51,28 @@
 }
 
 .features {
-  height: 40vh;
+  padding-bottom: 3.5rem;
+}
+
+.features__background {
+  background: #fff;
 }
 
 .features__desc {
   flex-grow: 1;
   text-align: center;
-  // flex-basis: 350px;
 }
 
 .features__icon {
-  font-size: 3rem;
+  font-size: 4rem;
   margin-top: 1em;
   color: #2a5dec;
-  padding: 1.2rem;
-  border: 2px solid black;
-  border-radius: 50%;
 }
 
 .features__title {
   padding-top: .6rem;
+}
+
+.login-form-forgot {
+  float: right;
 }
