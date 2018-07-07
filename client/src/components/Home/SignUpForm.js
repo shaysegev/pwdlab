@@ -1,25 +1,46 @@
 import React from 'react'
-import User from 'Models/User'
-import { Form, Icon, Input, Button, Checkbox } from 'antd'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { startSignUp } from 'Actions/auth'
+
+import { Form, Icon, Input, Button, Checkbox, Alert } from 'antd'
+
 const FormItem = Form.Item
 
 class SignUpForm extends React.Component {
   state = {
-    loading: false
+    loading: false,
+    error: false
   }
-  
+
+  componentDidUpdate(prevProps) {
+    // if (prevProps.email !== this.props.email) {
+      // todo redirect
+      
+    // }  
+  }
+   
   handleSubmit = (e) => {
     e.preventDefault();
-    this.setState({ loading: true })
-    this.props.form.validateFields((err, values) => {
+    this.props.form.validateFields(async (err, values) => {
       if (!err) {
-        const user = new User()
-        user.signUp(values).then((res) => {
-          console.log(res);
-        }).catch((e) => {
-          console.log(e)
+        this.setState({
+          loading: true,
+          error: false
         })
 
+        const res = await this.props.startSignUp(values)
+        this.setState({
+          loading: false
+        })
+
+        if (res.success) {
+          this.props.history.push('/dashboard')
+        } else {
+          this.setState({
+            error: res.msg
+          })
+        }        
       }
     });
   }
@@ -48,12 +69,13 @@ class SignUpForm extends React.Component {
             <Button 
               type="primary" 
               htmlType="submit" 
-              className="login-form-button"
+              className="signup-form-button"
               loading={this.state.loading} 
             >
               Register
             </Button>
           </FormItem>
+          {this.state.error && <Alert message={this.state.error} type="error" />}
           </Form>
       </div>
     )
@@ -62,4 +84,14 @@ class SignUpForm extends React.Component {
 
 const WrappedSignUpForm = Form.create()(SignUpForm)
 
-export default WrappedSignUpForm
+const mapStateToProps = (state) => {
+  return {
+    email: state.auth.email
+  }    
+}
+
+const mapDispatchToProps = (dispatch) => ({
+    startSignUp: (user) => dispatch(startSignUp(user))
+})
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(WrappedSignUpForm))

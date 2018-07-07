@@ -4,6 +4,9 @@ import { Provider } from 'react-redux'
 import configureStore from './store'
 import AppRouter from './routes/AppRouter'
 import registerServiceWorker from './registerServiceWorker'
+import {setAuthInterceptor} from './auth'
+
+setAuthInterceptor()
 
 ReactDOM.render(
   <Provider store={configureStore()}>
