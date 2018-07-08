@@ -10,36 +10,31 @@ const FormItem = Form.Item
 class SignUpForm extends React.Component {
   state = {
     loading: false,
-    error: false
-  }
-
-  componentDidUpdate(prevProps) {
-    // if (prevProps.email !== this.props.email) {
-      // todo redirect
-      
-    // }  
+    alert: false,
+    alertType: 'error'
   }
    
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
-        this.setState({
+        this.setState({ 
           loading: true,
-          error: false
+          alertType: 'info',
+          alert: 'First sign up might take a while, please wait.'
         })
 
         const res = await this.props.startSignUp(values)
-        this.setState({
-          loading: false
-        })
-
+        console.log(res);
+        
+        this.setState({ loading: false })
         if (res.success) {
-          this.props.history.push('/dashboard')
+          setTimeout(() => {
+            this.props.history.push('/dashboard')            
+          }, 1000)
+          this.setState({ alertType: 'success', alert: 'You have registered successfully.' })
         } else {
-          this.setState({
-            error: res.msg
-          })
+          this.setState({ alertType: 'error', alert: res.msg })
         }        
       }
     });
@@ -75,7 +70,7 @@ class SignUpForm extends React.Component {
               Register
             </Button>
           </FormItem>
-          {this.state.error && <Alert message={this.state.error} type="error" />}
+          {this.state.alert && <Alert message={this.state.alert} type={this.state.alertType} />}
           </Form>
       </div>
     )
