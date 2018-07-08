@@ -3,6 +3,7 @@ const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
+const crypt = require('../lib/crypt');
 
 const UserSchema = mongoose.Schema({
   email: {
@@ -20,6 +21,17 @@ const UserSchema = mongoose.Schema({
     type: String,
     require: true,
     minlength: 6
+  },
+  keys: {
+    public: {
+      type: String
+    },
+    private: {
+      type: String
+    },
+    standard: {
+      type: String
+    }
   },
   tokens: [{
     access: {
@@ -40,19 +52,21 @@ UserSchema.methods.toJSON = function() {
   return _.pick(userObject, ['_id', 'email']);
 };
 
-UserSchema.methods.generateAuthToken = async function() {
+UserSchema.methods.signUp = async function() {
   var user = this;
   var access = 'auth';
   var token = jwt.sign(
     {_id: user._id.toHexString(), access}, 
     process.env.JWT_SECRET,
-    { expiresIn: '100' }
+    { expiresIn: '1800' } // 30 mins
   ).toString();
-
+  
+  const keys = crypt.generateKeys();
+  user.keys = keys;
   user.tokens.push({access, token});
 
   await user.save();
-  return token;
+  return {token, key: keys.public};
 };
 
 UserSchema.methods.removeToken = function(token) {
@@ -65,25 +79,31 @@ UserSchema.methods.removeToken = function(token) {
   });
 };
 
-UserSchema.statics.findByToken = function(token) {
+UserSchema.statics.findByToken = async function(token) {
   var User = this;
   var decoded;
 
   try {
-    decoded = jwt.verify(token, process.env.JWT_SECRET);
-  } catch (e) {
-    return false;
+    decoded = jwt.verify(token, process.env.JWT_SECRET);    
+    return await User.findOne({
+      '_id': decoded._id,
+      'tokens.token': token,
+      'tokens.access': 'auth'
+    });
+  } catch (e) {        
     // if (e.name === 'TokenExpiredError') {
-      // return Promise.reject();
+      decoded = jwt.decode(token, process.env.JWT_SECRET);
+      const user = await User.findOne({
+        '_id': decoded._id,
+        'tokens.token': token,
+        'tokens.access': 'auth'
+      });
+      if (user) {
+        await user.removeToken(token);
+      }
+      throw new Error();
     // }
-    
   }
-
-  return User.findOne({
-    '_id': decoded._id,
-    'tokens.token': token,
-    'tokens.access': 'auth'
-  });
 };
 
 UserSchema.statics.findByCredentials = function(email, password) {
@@ -123,11 +143,15 @@ UserSchema.pre('save', function(next) {
 });
 
 UserSchema.post('save', function(error, doc, next) {
-  let msg = null;
+  let msg;
+  console.log(error);
+  
   if (error.name === 'MongoError' && error.code === 11000) {
-    let msg = 'Email already registered.';
+    msg = 'Email already registered.';
+  } else if ('email' in error.errors) {
+    msg = error.errors.email.message
   } else {
-    let msg = 'Error occurred, please try again later.';
+    msg = 'Error occurred, please try again later.';
   }
   next({
     success: false,

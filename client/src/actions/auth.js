@@ -1,9 +1,11 @@
 import axios from 'axios'
 import {setToken} from '../auth'
 
-const login = (uid) => ({
+const login = ({ _id, email, key }) => ({
   type: 'LOGIN',
-  uid
+  _id,
+  email,
+  key
 })
 
 const startLogin = () => {
@@ -18,23 +20,16 @@ const startLogout = () => {
   
 }
 
-const signUp = ({ name, email }) => ({
-  type: 'SIGNUP',
-  email
-})
-
 const startSignUp = (newUser) => {
   return async (dispatch) => {
     try {
-      const response = await axios.post('/api/users', newUser)    
-      setToken(response.headers.authorization)
-      dispatch(login({
-        uid: response.data.uid,
-        email: response.data.email
-      }))
-      return {success: true}
+      const res = await axios.post('/api/users', newUser)
+      if (res.data.success) {
+        setToken(res.headers.authorization)
+        dispatch(login(res.data))
+        return {success: true}
+      }
     } catch(e) {
-      debugger;
       return {
         success: false,
         msg: e.response.data.msg || 'Error occurred, please try again later.'
@@ -43,4 +38,4 @@ const startSignUp = (newUser) => {
   }
 }
 
-export { login, startLogin, logout, startLogout, signUp, startSignUp }
+export { login, startLogin, logout, startLogout, startSignUp }
