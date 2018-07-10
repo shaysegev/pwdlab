@@ -27,5 +27,11 @@
     "less": "2.7.2",
     "less-loader": "^4.1.0",
     "node-sass": "^4.9.0"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "^Components(.*)$": "<rootDir>/src/components$1", 
+      "^Actions(.*)$": "<rootDir>/src/actions$1"
+    }
   }
 }
