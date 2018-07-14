@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev-client": "cd client && cross-env NODE_ENV=development yarn start",
-    "dev-backend": "cd backend && cross-env NODE_ENV=development yarn start",
+    "dev-backend": "cd backend && cross-env NODE_ENV=development yarn debug",
     "dev-mongodb": "mongod --dbpath=\"C:\\data\\db\"",
     "update-client": "cd client && yarn && yarn build",
     "update-backend": "cd backend && yarn",
