@@ -1,77 +1,19 @@
 @import "~antd/dist/antd.less";
 @import "../../styles/themeOverideVariables.less";
+@import "../../styles/dashboard/themeOverride.less";
+@import "../../styles/dashboard/autocomplete.less";
 
 * {
   z-index: 1;
 }
 
 
-.container {
-  padding: 0 50px;
+.dashboard-content {
+  margin-left: 200px;
 }
 
-.header__logo {
-  color: @primary-color;
-}
-
-.hero__gradient {
-  background-image: linear-gradient(to right top, #005eeb, #225dec, #345ced, #415aed, #4c59ee);
-}
-
-.hero {
-  padding: 3rem 0 9rem;
-}
-
-.hero__forms {
-  background: #fff;
-  color: #222;
-  padding: 1.2rem 2.5rem;
-}
-
-.hero__title {
-  font-size: 3rem;
-  color: whitesmoke; 
-}
-
-.hero__subtitle {
-  font-size: 1.6rem;
-  color: whitesmoke; 
-}
-
-.tabs__forms {
-  display: block;
-    width: 45%;
-    float: left;
-}
-
-.SignUp-form {
-  display: flex;
-  flex-direction: column;
-}
-
-.features {
-  padding-bottom: 3.5rem;
-}
-
-.features__background {
-  background: #fff;
-}
-
-.features__desc {
-  flex-grow: 1;
-  text-align: center;
-}
-
-.features__icon {
-  font-size: 4rem;
-  margin-top: 1em;
-  color: #2a5dec;
-}
-
-.features__title {
-  padding-top: .6rem;
-}
-
-.login-form-forgot {
-  float: right;
+.logo {
+  padding: .7rem;
+  color: white;
+  background: #29214d;
 }

@@ -1,31 +1,43 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom'
-import { isLoggedIn } from '../../auth'
-import { Layout } from 'antd'
+import { Layout, Menu, Icon } from 'antd'
 import './Dashboard.less'
+import '../../styles/dashboard/responsive.less'
+
+import Sidebar from './Sidebar'
+import Searchbar from './Searchbar'
 
 const { Header, Footer, Content } = Layout
 
 class App extends Component {
-  // componentWillMount() {
-  //   if (!isLoggedIn()) {
-  //     this.props.history.push('/')
-  //   }
-  // }
   render() {
     return (
-      <div className="App">
-        <Layout>
-          <Header>
-            <h1 className="header__logo">Pwdlab</h1>
+      <div className="dashboard">
+        <Sidebar className="sidebar" />
+        
+        <Layout className="dashboard-content">
+          <Header style={{ background: '#fff', padding: 0 }}>
+            <Searchbar />
           </Header>
-          <Content>
-            Dashboard page
+          <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
+            <div style={{ padding: 24, background: '#fff', textAlign: 'center' }}>
+              ...
+              <br />
+              Really
+              <br />...<br />...<br />...<br />
+              long
+              <br />...<br />...<br />...<br />...<br />...<br />...
+              <br />...<br />...<br />...<br />...<br />...<br />...
+              <br />...<br />...<br />...<br />...<br />...<br />...
+              <br />...<br />...<br />...<br />...<br />...<br />...
+              <br />...<br />...<br />...<br />...<br />...<br />...
+              <br />...<br />...<br />...<br />...<br />...<br />...
+              <br />...<br />...<br />...<br />...<br />...<br />
+              content
+            </div>
           </Content>
-          <Footer>
-            <p className="container">
-              Made by Shay Segev | MIT license
-            </p>
+          <Footer style={{ textAlign: 'center' }}>
+            Ant Design ©2016 Created by Ant UED
           </Footer>
         </Layout>
       </div>
