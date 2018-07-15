@@ -5,7 +5,6 @@ const User = require('../../models/user');
 const Crypt = require('../../models/crypt');
 const logger = require('../../logger');
 
-/* GET users listing. */
 router.post('/me', authenticate, async (req, res, next) => {  
   pubkey = await Crypt.getPublicKey(req.user);
   if (pubkey) {
@@ -23,11 +22,13 @@ router.post('/me', authenticate, async (req, res, next) => {
 router.post('/', async (req, res, next) => {
   const body = _.pick(req.body, ['email', 'password']);
   try {
+    // todo check if email not exist
     let user = new User(body);
     // const userExists = user.exists(); // todo
     const token = await user.generateAuthToken();
 
     // Creating encryption keys
+    // todo speed up registration by generating temp RSA keys on visit if user/token is not found
     const crypt = new Crypt();
     const pubkey = await crypt.createKeys(user);
     
@@ -66,10 +67,10 @@ router.post('/login', async (req, res, next) => {
       success: true,
       email: user.email,
       _id: user._id,
-      key: user.key
+      key: pubkey
     });
   } catch (e) {
-    res.status(400).send({success: false});
+    res.status(400).send({success: false, msg: e});
   }
 });
 

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { startLogin } from 'Actions/auth'
 
-import { Form, Modal, Icon, Input, Button, Checkbox } from 'antd'
+import { Form, Alert, Icon, Input, Button, Checkbox } from 'antd'
 const FormItem = Form.Item
 
 class LoginForm extends React.Component {
@@ -17,7 +17,7 @@ class LoginForm extends React.Component {
     e.preventDefault();
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
-        this.setState({ loading: true })
+        this.setState({ loading: true, alert: false })
 
         const res = await this.props.startLogin(values)
         
@@ -53,11 +53,17 @@ class LoginForm extends React.Component {
             )}
           </FormItem>
           <FormItem>
-            <Button type="primary" htmlType="submit" className="login-form-button">
+            <Button 
+              type="primary" 
+              htmlType="submit" 
+              className="login-form-button"
+              loading={this.state.loading} 
+              >
               Log in
             </Button>
             <a className="login-form-forgot" href="">Forgot password?</a>
           </FormItem>
+          {this.state.alert && <Alert message={this.state.alert} type={this.state.alertType} />}
         </Form>
       </div>
     )
