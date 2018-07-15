@@ -2,8 +2,10 @@ const CryptoJS = require('crypto-js');
 const NodeRSA = require('node-rsa');
 
 /**
-* Generate RSA keys
-*/
+ * Generate RSA keys
+ * 
+ * @returns RSA key
+ */
 const generateRSAKeys = () => {
   const key = new NodeRSA({b: 1024});
   const keyPair = key.generateKeyPair();
@@ -21,8 +23,10 @@ const generateRSAKeys = () => {
 // }
 
 /**
-* Get AES app key from env
-*/
+ * Get AES app key from env
+ * 
+ * @returns ENV AES key
+ */
 const getAppAESKey = () => {
   return process.env.AES_KEY;
 }
@@ -32,46 +36,63 @@ const getAppAESKey = () => {
 // }
 
 /**
-* Get/generate crypt id for storing public/private keys
-*/
+ * Get/generate crypt id for storing public/private keys
+ * 
+ * @param Destructured user id/email
+ * @returns cid (Crypt ID)
+ */
 const getCryptId = ({ _id, email }) => {
   return CryptoJS.SHA256(_id + email).toString();
 }
 
 /**
-* Encode Base64 string
-*/
+ * Encode Base64 string
+ * 
+ * @param string
+ * @returns Base64 encoded string
+ */
 const base64Encode = string => {
   let buff = new Buffer(string);  
   return buff.toString('base64');
 }
 
 /**
-* Decode Base64 string
-*/
+ * Decode Base64 string
+ * 
+ * @param decoded string
+ * @returns Base64 decoded string
+ */
 const base64Decode = string => {
   let buff = new Buffer(string, 'base64');  
   return buff.toString('ascii');
 }
 
 /**
-* Encrypt AES by app env key
-*/
+ * Encrypt AES by app env key
+ * 
+ * @param text
+ * @returns AES encrypted text
+ */
 const encrypt = text => {
   return CryptoJS.AES.encrypt(text, getAppAESKey()).toString();
 }
 
 /**
-* Decrypt AES by app env key
-*/
+ * Decrypt AES by app env key
+ * 
+ * @param ciphered text
+ * @returns decrypted text
+ */
 const decrypt = ciphertext => {
   var bytes  = CryptoJS.AES.decrypt(ciphertext, getAppAESKey());
   return bytes.toString(CryptoJS.enc.Utf8);
 }
 
 /**
-* Generating a consistent key based on preconfigured iv and salt
-*/
+ * Generating a consistent key based on preconfigured iv and salt
+ * 
+ * @returns key object
+ */
 const getFixedCipherKey = () => {
   const salt = CryptoJS.enc.Hex.parse(process.env.AES_UNIQUE_SALT);
 
@@ -82,15 +103,19 @@ const getFixedCipherKey = () => {
 }
 
 /**
-* Get env IV for consistent ciphering
-*/
+ * Get env IV for consistent ciphering
+ * 
+ * @returns ENV IV
+ */
 const getFixedIV = () => {
   return CryptoJS.enc.Hex.parse(process.env.AES_UNIQUE_IV);
 }
 
 /**
-* Generating unique cipher based on preconfigured iv and salt
-*/
+ * Generating unique cipher based on preconfigured iv and salt
+ * 
+ * @returns Encrypted text
+ */
 const encryptUnique = text => {
   return CryptoJS.AES.encrypt(text, getFixedCipherKey(), { 
     iv: getFixedIV(),
@@ -100,8 +125,10 @@ const encryptUnique = text => {
 }
 
 /**
-* Decrypting cipher based on preconfigured iv and salt
-*/
+ * Decrypting cipher based on preconfigured iv and salt
+ * 
+ * @returns Decrypted text 
+ */
 const decryptUnique = ciphertext => {
   var decrypted = CryptoJS.AES.decrypt(ciphertext, getFixedCipherKey(), { 
     iv: getFixedIV(),

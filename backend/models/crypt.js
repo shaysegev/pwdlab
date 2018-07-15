@@ -18,8 +18,11 @@ const CryptSchema = mongoose.Schema({
 });
 
 /**
-* Creating RSA keys for user
-*/
+ * Creating RSA keys for user
+ *
+ * @param user
+ * @returns RSA public key
+ */
 CryptSchema.methods.createKeys = async function(user) {
   const crypt = this;
   crypt.cid = cryptLib.getCryptId(user);
@@ -33,8 +36,12 @@ CryptSchema.methods.createKeys = async function(user) {
 };
 
 /**
-* Get user's public key
-*/
+ * Get user's public key
+ * 
+ * @param user
+ * @throws error
+ * @returns Base64 decode public key
+ */
 CryptSchema.statics.getPublicKey = async function(user) {
   const Crypt = this;
   const cid = cryptLib.getCryptId(user);
@@ -42,7 +49,7 @@ CryptSchema.statics.getPublicKey = async function(user) {
   const keys = await Crypt.findOne({ cid });
   if (!keys) {
     logger.error(`Crypt keys not found for user ${user._id}. Cid: ${cid}`);
-    return false;
+    throw 'Error occurred, please try again later.';
   }
 
   return cryptLib.base64Decode(keys.pubkey);

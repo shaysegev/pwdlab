@@ -1,6 +1,15 @@
 const User = require('./../models/user');
 const cryptLib = require('./../lib/crypt');
 
+/**
+ * JWT Authentication middleware
+ * 
+ * @param req
+ * @param res
+ * @param next
+ * 
+ * @returns next/error
+ */
 const authenticate = async (req, res, next) => {
   const token = req.header('authorization');
 
