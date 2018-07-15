@@ -5,7 +5,7 @@
   "scripts": {
     "start": "nodemon bin/www",
     "serve": "node ./bin/www",
-    "debug": "nodemon --inspect-brk=9229 ./bin/www"
+    "debug": "nodemon --inspect=9229 ./bin/www"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
