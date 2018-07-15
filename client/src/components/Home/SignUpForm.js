@@ -25,13 +25,10 @@ class SignUpForm extends React.Component {
         })
 
         const res = await this.props.startSignUp(values)
-        console.log(res);
         
         this.setState({ loading: false })
         if (res.success) {
-          setTimeout(() => {
-            this.props.history.push('/dashboard')            
-          }, 1000)
+          this.props.history.push('/dashboard')
           this.setState({ alertType: 'success', alert: 'You have registered successfully.' })
         } else {
           this.setState({ alertType: 'error', alert: res.msg })

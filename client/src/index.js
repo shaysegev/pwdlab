@@ -29,10 +29,9 @@ ReactDOM.render(<LoadingPage />, document.getElementById('root'))
 
 const initAuth = async () => {
   const res = await verifyToken()
-  res.success = false // todo remove - temp
   
   if (res.success) {
-    store.dispatch(login(res.user))
+    store.dispatch(login(res))
     renderApp()
     if (history.location.pathname === '/') {
       history.push('/dashboard')

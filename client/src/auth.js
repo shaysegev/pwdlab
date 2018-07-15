@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { userRoutes } from './apiConfig'
 
 const setAuthInterceptor = () => {
   axios.interceptors.request.use(
@@ -14,6 +15,7 @@ const setAuthInterceptor = () => {
   )
 }
 
+// todo move to action
 const verifyToken = async () => {
   const token = getToken()
   if (!token) {
@@ -21,7 +23,7 @@ const verifyToken = async () => {
   }
 
   try {
-    const response = await axios.post('/api/users/me')
+    const response = await axios.post(userRoutes.me)
     return response.data
   } catch (e) {
     return {success: false}
