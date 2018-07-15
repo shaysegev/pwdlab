@@ -3,14 +3,14 @@ const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
-const crypt = require('../lib/crypt');
+const cryptLib = require('../lib/crypt');
+const logger = require('../logger');
 
 const UserSchema = mongoose.Schema({
   email: {
     type: String,
     required: true,
     trim: true,
-    minlength: 1,
     unique: true,
     validate: {
       validator: validator.isEmail,
@@ -21,17 +21,6 @@ const UserSchema = mongoose.Schema({
     type: String,
     require: true,
     minlength: 6
-  },
-  keys: {
-    public: {
-      type: String
-    },
-    private: {
-      type: String
-    },
-    standard: {
-      type: String
-    }
   },
   tokens: [{
     access: {
@@ -52,22 +41,19 @@ UserSchema.methods.toJSON = function() {
   return _.pick(userObject, ['_id', 'email']);
 };
 
-UserSchema.methods.signUp = async function() {
-  var user = this;
-  var access = 'auth';
-  var token = jwt.sign(
+UserSchema.methods.generateAuthToken = function() {
+  const user = this;
+  const access = 'auth';
+  const token = jwt.sign(
     {_id: user._id.toHexString(), access}, 
     process.env.JWT_SECRET,
-    { expiresIn: '1800' } // 30 mins
+    { expiresIn: '.5h' }
   ).toString();
-  
-  const keys = crypt.generateKeys();
-  user.keys = keys;
-  user.tokens.push({access, token});
 
-  await user.save();
-  return {token, key: keys.public};
-};
+  user.tokens.push({access, token});
+  
+  return token;
+}
 
 UserSchema.methods.removeToken = function(token) {
   var user = this;
@@ -90,23 +76,22 @@ UserSchema.statics.findByToken = async function(token) {
       'tokens.token': token,
       'tokens.access': 'auth'
     });
-  } catch (e) {        
-    // if (e.name === 'TokenExpiredError') {
-      decoded = jwt.decode(token, process.env.JWT_SECRET);
-      const user = await User.findOne({
-        '_id': decoded._id,
-        'tokens.token': token,
-        'tokens.access': 'auth'
-      });
-      if (user) {
-        await user.removeToken(token);
-      }
-      throw new Error();
-    // }
+  } catch (e) {
+    logger.debug(e);
+    decoded = jwt.decode(token, process.env.JWT_SECRET);
+    const user = await User.findOne({
+      '_id': decoded._id,
+      'tokens.token': token,
+      'tokens.access': 'auth'
+    });
+    if (user) {
+      await user.removeToken(token);
+    }
+    throw new Error();
   }
 };
 
-UserSchema.statics.findByCredentials = function(email, password) {
+UserSchema.statics.findByCredentials = function({email, password}) {
   var User = this;
 
   return User.findOne({email}).then((user) => {
@@ -115,9 +100,9 @@ UserSchema.statics.findByCredentials = function(email, password) {
     }
 
     return new Promise((resolve, reject) => {
-      // Use bcrypt.compare to compare password and user.password
       bcrypt.compare(password, user.password, (err, res) => {
         if (res) {
+          user.token = user.generateAuthToken()
           resolve(user);
         } else {
           reject();
@@ -129,6 +114,10 @@ UserSchema.statics.findByCredentials = function(email, password) {
 
 UserSchema.pre('save', function(next) {
   var user = this;
+
+  if (user.isModified('email')) {
+    user.email = cryptLib.encryptUnique(user.email);
+  }
 
   if (user.isModified('password')) {
     bcrypt.genSalt(10, (err, salt) => {
@@ -144,11 +133,16 @@ UserSchema.pre('save', function(next) {
 
 UserSchema.post('save', function(error, doc, next) {
   let msg;
-  console.log(error);
+  
+  if (!error) {
+    next();
+  }
+
+  logger.error(`User save error: ${error}`);
   
   if (error.name === 'MongoError' && error.code === 11000) {
     msg = 'Email already registered.';
-  } else if ('email' in error.errors) {
+  } else if (error.errors && 'email' in error.errors) {
     msg = error.errors.email.message
   } else {
     msg = 'Error occurred, please try again later.';

@@ -1,17 +1,16 @@
 const User = require('./../models/user');
+const cryptLib = require('./../lib/crypt');
 
 const authenticate = async (req, res, next) => {
   const token = req.header('authorization');
-  console.log(token);
-  
 
   try {
     const user = await User.findByToken(token);
-    console.log(user)
     if (!user) {
       return res.status(401).send();
     }
-  
+    user.email = cryptLib.decryptUnique(user.email);
+    
     req.user = user;
     req.token = token;
     next();
