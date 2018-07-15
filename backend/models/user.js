@@ -34,6 +34,9 @@ const UserSchema = mongoose.Schema({
   }]
 });
 
+/**
+ * Allowed JSON object to return to frontend
+ */
 UserSchema.methods.toJSON = function() {
   var user = this;
   var userObject = user.toObject();
@@ -41,6 +44,11 @@ UserSchema.methods.toJSON = function() {
   return _.pick(userObject, ['_id', 'email']);
 };
 
+/**
+ * Generating JWT token for user
+ * 
+ * @returns JWT token
+ */
 UserSchema.methods.generateAuthToken = function() {
   const user = this;
   const access = 'auth';
@@ -54,7 +62,12 @@ UserSchema.methods.generateAuthToken = function() {
   
   return token;
 }
-
+/**
+ * Removes token from database
+ * 
+ * @param token
+ * @returns promise
+ */
 UserSchema.methods.removeToken = function(token) {
   var user = this;
 
@@ -65,6 +78,13 @@ UserSchema.methods.removeToken = function(token) {
   });
 };
 
+/**
+ * Find user by token
+ * 
+ * @param token
+ * @returns user
+ * @throws error
+ */
 UserSchema.statics.findByToken = async function(token) {
   var User = this;
   var decoded;
@@ -91,18 +111,30 @@ UserSchema.statics.findByToken = async function(token) {
   }
 };
 
+/**
+ * Find user by credentials
+ * 
+ * @param email
+ * @param password
+ * @returns user/false
+ */
 UserSchema.statics.findByCredentials = function({email, password}) {
   var User = this;
+  email = cryptLib.encryptUnique(email).toString();
 
   return User.findOne({email}).then((user) => {
     if (!user) {
-      return Promise.reject();
+      return Promise.reject(`User not found`);
     }
 
     return new Promise((resolve, reject) => {
-      bcrypt.compare(password, user.password, (err, res) => {
+      bcrypt.compare(password, user.password, async (err, res) => {
         if (res) {
-          user.token = user.generateAuthToken()
+          user.token = user.generateAuthToken();
+          user.email = cryptLib.decryptUnique(user.email);
+          await user.save();
+          // todo find a neater way of doing it
+          user.email = cryptLib.decryptUnique(user.email);
           resolve(user);
         } else {
           reject();
@@ -112,6 +144,11 @@ UserSchema.statics.findByCredentials = function({email, password}) {
   });
 };
 
+/**
+ * Encrypt email address and generate salt for password upon saving
+ * 
+ * @param next
+ */
 UserSchema.pre('save', function(next) {
   var user = this;
 
@@ -131,6 +168,13 @@ UserSchema.pre('save', function(next) {
   }
 });
 
+/**
+ * Error capture upon saving/updating users
+ * 
+ * @param error
+ * @param doc
+ * @param next
+ */
 UserSchema.post('save', function(error, doc, next) {
   let msg;
   
