@@ -5,7 +5,7 @@ import configureStore from './store'
 import AppRouter, { history } from './routes/AppRouter'
 import LoadingPage from 'Components/LoadingPage'
 import registerServiceWorker from './registerServiceWorker'
-import { setAuthInterceptor, verifyToken, deleteToken } from './auth'
+import { setAuthInterceptor, initAuthIdleTimeout, verifyToken, deleteToken } from './auth'
 import { login, logout } from 'Actions/auth'
 
 setAuthInterceptor()
@@ -32,6 +32,7 @@ const initAuth = async () => {
   
   if (res.success) {
     store.dispatch(login(res))
+    initAuthIdleTimeout()
     renderApp()
     if (history.location.pathname === '/') {
       history.push('/dashboard')
