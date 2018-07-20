@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux'
-import SimpleReducer from './SimpleReducer'
 import AuthReducer from './AuthReducer'
+import RecordReducer from './RecordReducer'
 
 export default combineReducers({
-  simple: SimpleReducer,
-  auth: AuthReducer
+  auth: AuthReducer,
+  record: RecordReducer
 })

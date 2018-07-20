@@ -1,7 +1,8 @@
 const apiV1 = '/api'
 
 const apiRoutes = {
-  users: `${apiV1}/users`
+  users: `${apiV1}/users`,
+  records: `${apiV1}/records`
 }
 
 const userRoutes = {
@@ -12,6 +13,11 @@ const userRoutes = {
   logout: apiRoutes.users + '/logout',
 }
 
+const recordRoutes = {
+  default: apiRoutes.apiRoutes,
+}
+
 export {
-  userRoutes
+  userRoutes,
+  recordRoutes
 }

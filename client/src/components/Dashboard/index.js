@@ -6,6 +6,7 @@ import '../../styles/dashboard/responsive.less'
 
 import Sidebar from './Sidebar'
 import Searchbar from './Searchbar'
+import Record from './Record'
 
 const { Header, Footer, Content } = Layout
 
@@ -19,22 +20,8 @@ class App extends Component {
           <Header style={{ background: '#fff', padding: 0 }}>
             <Searchbar />
           </Header>
-          <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
-            <div style={{ padding: 24, background: '#fff', textAlign: 'center' }}>
-              ...
-              <br />
-              Really
-              <br />...<br />...<br />...<br />
-              long
-              <br />...<br />...<br />...<br />...<br />...<br />...
-              <br />...<br />...<br />...<br />...<br />...<br />...
-              <br />...<br />...<br />...<br />...<br />...<br />...
-              <br />...<br />...<br />...<br />...<br />...<br />...
-              <br />...<br />...<br />...<br />...<br />...<br />...
-              <br />...<br />...<br />...<br />...<br />...<br />...
-              <br />...<br />...<br />...<br />...<br />...<br />
-              content
-            </div>
+          <Content>
+            <Record />
           </Content>
           <Footer style={{ textAlign: 'center' }}>
             Ant Design ©2016 Created by Ant UED
