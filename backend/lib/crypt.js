@@ -1,5 +1,8 @@
 const CryptoJS = require('crypto-js');
+const cryptoNode = require('crypto');
 const NodeRSA = require('node-rsa');
+
+let privateKey = null;
 
 /**
  * Generate RSA keys
@@ -16,6 +19,58 @@ const generateRSAKeys = () => {
   }
 
   return keys;
+}
+
+const generateRecordSalt = () => {
+  return cryptoNode.randomBytes(Math.ceil(16 / 2)).toString('hex').slice(0, 16);
+}
+
+const addPrivateKey = (key) => {
+  privateKey = key;
+}
+
+const encrypt = (text) => {
+  if (!privateKey) {
+    throw 'Encryption key not added';
+  }
+  
+  let enc = cryptoNode.privateEncrypt({
+    key: privateKey,
+    padding: cryptoNode.RSA_PKCS1_OAEP_PADDING
+    }, Buffer.from(text));
+  return enc.toString('base64');
+}
+
+const decrypt = (text) => {
+  if (!privateKey) {
+    throw 'Encryption key not added';
+  }
+
+  let dec = cryptoNode.privateDecrypt({
+    key: privateKey,
+    padding: cryptoNode.RSA_PKCS1_OAEP_PADDING
+    }, Buffer.from(text, 'base64'));
+  return dec.toString();
+}
+
+/**
+ * Encrypt user record salt with app AES key
+ * 
+ * @param string recordSalt
+ * @returns string encrypted recordSalt
+ */
+const encryptSalt = (recordSalt) => {
+  return encryptWithAppKey(recordSalt);
+}
+
+/**
+ * Decrypt user record salt with app AES key
+ * 
+ * @param string recordSalt
+ * @returns string decrypted recordSalt
+ */
+const decryptSalt = (recordSalt) => {
+  return decryptWithAppKey(recordSalt);
 }
 
 // const encryptAESKey = AESkey => {
@@ -46,6 +101,13 @@ const getCryptId = ({ _id, email }) => {
 }
 
 /**
+ * Get/generate unique record id based on user's id/salt
+ */
+const getRecordId = ({ _id, recordSalt }) => {
+  return CryptoJS.SHA256(_id + recordSalt).toString();  
+}
+
+/**
  * Encode Base64 string
  * 
  * @param string
@@ -73,8 +135,14 @@ const base64Decode = string => {
  * @param text
  * @returns AES encrypted text
  */
-const encrypt = text => {
-  return CryptoJS.AES.encrypt(text, getAppAESKey()).toString();
+const encryptWithAppKey = text => {
+  try {
+    let enc = CryptoJS.AES.encrypt(text, getAppAESKey());
+    return enc.toString()
+  } catch (e) {
+    logger.error(e);
+    throw new Error(e);
+  }
 }
 
 /**
@@ -83,7 +151,7 @@ const encrypt = text => {
  * @param ciphered text
  * @returns decrypted text
  */
-const decrypt = ciphertext => {
+const decryptWithAppKey = ciphertext => {
   var bytes  = CryptoJS.AES.decrypt(ciphertext, getAppAESKey());
   return bytes.toString(CryptoJS.enc.Utf8);
 }
@@ -152,9 +220,13 @@ module.exports = {
   encrypt,
   decrypt,
   generateRSAKeys,
+  generateRecordSalt,
+  encryptSalt,
   getCryptId,
+  getRecordId,
   base64Encode,
   base64Decode,
   encryptUnique,
-  decryptUnique
+  decryptUnique,
+  addPrivateKey,
 }

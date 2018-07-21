@@ -42,7 +42,7 @@ CryptSchema.methods.createKeys = async function(user) {
  * @throws error
  * @returns Base64 decode public key
  */
-CryptSchema.statics.getPublicKey = async function(user) {
+CryptSchema.statics.getUserKey = async function(type, user) {
   const Crypt = this;
   const cid = cryptLib.getCryptId(user);
 
@@ -52,7 +52,7 @@ CryptSchema.statics.getPublicKey = async function(user) {
     throw 'Error occurred, please try again later.';
   }
 
-  return cryptLib.base64Decode(keys.pubkey);
+  return cryptLib.base64Decode(keys[type]);
 };
 
 const Crypt = mongoose.model('CryptKey', CryptSchema);

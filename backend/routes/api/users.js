@@ -6,7 +6,7 @@ const Crypt = require('../../models/crypt');
 const logger = require('../../logger');
 
 router.post('/me', authenticate, async (req, res, next) => {  
-  pubkey = await Crypt.getPublicKey(req.user);
+  pubkey = await Crypt.getUserKey('pubkey', req.user);
   if (pubkey) {
     res.send({
       success: true,
@@ -26,6 +26,8 @@ router.post('/', async (req, res, next) => {
     let user = new User(body);
     // const userExists = user.exists(); // todo
     const token = await user.generateAuthToken();
+    // generate salt for hashing/encryption
+    user.generateRecordSalt();
 
     // Creating encryption keys
     // todo speed up registration by generating temp RSA keys on visit if user/token is not found
@@ -61,7 +63,7 @@ router.post('/login', async (req, res, next) => {
       res.status(400).send({success: false});
     }
     // Get user's public key
-    pubkey = await Crypt.getPublicKey(user);
+    pubkey = await Crypt.getUserKey('pubkey', user);
 
     res.header('authorization', user.token).send({
       success: true,
