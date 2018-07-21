@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { addPublicKey } from './lib/crypt'
 import { userRoutes } from './apiConfig'
 
 /**
@@ -24,6 +25,14 @@ const setAuthInterceptor = () => {
     },
     error => Promise.reject(error)
   )
+
+  axios.interceptors.response.use(undefined, err => {
+    let res = err.response;
+    if (res.status === 401) {
+      deleteToken()
+      window.location.href = '/'
+    }
+  })
 }
 
 /**
@@ -32,27 +41,28 @@ const setAuthInterceptor = () => {
  * @returns void
  */
 const initAuthIdleTimeout = () => {
-  window.onload = resetAuthTimer;
-  window.onmousemove = resetAuthTimer;
-  window.onmousedown = resetAuthTimer;
-  window.ontouchstart = resetAuthTimer;
-  window.onclick = resetAuthTimer; 
-  window.onkeypress = resetAuthTimer;   
-  window.addEventListener('scroll', resetAuthTimer, true);
+  window.onload = resetAuthTimer
+  window.onmousemove = resetAuthTimer
+  window.onmousedown = resetAuthTimer
+  window.ontouchstart = resetAuthTimer
+  window.onclick = resetAuthTimer
+  window.onkeypress = resetAuthTimer
+  window.addEventListener('scroll', resetAuthTimer, true)
 }
 
 /**
  * Reset timer on user action
  */
 const resetAuthTimer = () => {
-  clearTimeout(authTimeoutCounter);
-  authTimeoutCounter = setTimeout(logout, 60000 * 30); // 30 minutes
+  clearTimeout(authTimeoutCounter)
+  authTimeoutCounter = setTimeout(logout, 60000 * 30) // 30 minutes
 }
 
 /**
  * Logout user
  */
 const logout = () => {
+  console.log('logout')
   // todo logout / popup?
 }
 
@@ -69,6 +79,7 @@ const verifyToken = async () => {
 
   try {
     const response = await axios.post(userRoutes.me)
+    addPublicKey(response.data.key)
     return response.data
   } catch (e) {
     return {success: false}
