@@ -7,7 +7,7 @@ const Features = () => (
       <Col md={8} className="features__desc">
         <Icon className="features__icon" type="check-circle-o" />
         <h2 className="features__title">Strong Encryption</h2>
-        <p className="features__content">All encryption keys are unique and stored encrypted, so only you have access to your own passwords.</p>
+        <p className="features__content">All data is stored encrypted including your personal details, so only you have access to your own passwords.</p>
       </Col>
       <Col md={8} className="features__desc">
         <Icon className="features__icon" type="code" />

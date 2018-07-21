@@ -13,15 +13,17 @@ const Hero = () => (
           <h2 className="hero__title">Secure your passwords.</h2>
           <h3 className="hero__subtitle">Access anywhere. Anytime.</h3>
         </Col>
-        <Col md={12} sm={24} className="hero__forms">
-          <Tabs tabPosition="bottom">
-            <TabPane tab="Sign up" key="1">
-              <SignUpForm className="hero__signup" />
-            </TabPane>
-            <TabPane tab="Login" key="2">
-              <LoginForm />
-            </TabPane>
-          </Tabs>
+        <Col md={12} sm={24}>
+          <div className="hero__forms">
+            <Tabs tabPosition="bottom">
+              <TabPane tab="Sign up" key="1">
+                <SignUpForm className="hero__signup" />
+              </TabPane>
+              <TabPane tab="Login" key="2">
+                <LoginForm />
+              </TabPane>
+            </Tabs>
+          </div>
         </Col>
       </Row>
     </div>
