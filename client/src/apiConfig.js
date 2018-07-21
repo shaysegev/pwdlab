@@ -14,7 +14,7 @@ const userRoutes = {
 }
 
 const recordRoutes = {
-  default: apiRoutes.apiRoutes,
+  default: apiRoutes.records,
 }
 
 export {
