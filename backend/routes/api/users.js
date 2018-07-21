@@ -3,6 +3,7 @@ const _ = require('lodash');
 const authenticate = require('../../middleware/authenticate');
 const User = require('../../models/user');
 const Crypt = require('../../models/crypt');
+const cryptLib = require('../../lib/crypt');
 const logger = require('../../logger');
 
 router.post('/me', authenticate, async (req, res, next) => {  
@@ -10,7 +11,7 @@ router.post('/me', authenticate, async (req, res, next) => {
   if (pubkey) {
     res.send({
       success: true,
-      _id: req.user._id,
+      _id: cryptLib.encryptId(req.user._id),
       email: req.user.email,
       key: pubkey
     });
@@ -46,7 +47,7 @@ router.post('/', async (req, res, next) => {
     res.header('authorization', token).send({
       success: true,
       email: user.email,
-      _id: user._id,
+      _id: cryptLib.encryptId(user._id),
       key: pubkey
     });
   } catch(e) {
@@ -68,7 +69,7 @@ router.post('/login', async (req, res, next) => {
     res.header('authorization', user.token).send({
       success: true,
       email: user.email,
-      _id: user._id,
+      _id: cryptLib.encryptId(user._id),
       key: pubkey
     });
   } catch (e) {

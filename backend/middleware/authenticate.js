@@ -19,8 +19,11 @@ const authenticate = async (req, res, next) => {
     if (!user) {
       return res.status(401).send();
     }
+
+    // Decrypting some user data and making it useable
     user.email = cryptLib.decryptUnique(user.email);
     user.salt = cryptLib.decryptSalt(user.salt);
+    // And add it to the crypt lib (accessible for models)
     cryptLib.setUserSalt(user.salt);
 
     // Adding the user's private key to be accessible within the app

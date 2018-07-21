@@ -109,9 +109,25 @@ const decryptSalt = (userSalt) => {
   return decryptWithAppKey(userSalt);
 }
 
-// const encryptAESKey = AESkey => {
-//   return publicKey.encrypt(AESkey, 'utf8').toString();
-// }
+/**
+ * Encrypt a Mongoose ID object
+ * 
+ * @param object ObjectId
+ * @returns string encrypted _id
+ */
+const encryptId = (id) => {
+  return encryptUnique(id.toHexString()).toString();
+}
+
+/**
+ * Decrypt user record salt with app AES key
+ * 
+ * @param object ObjectId
+ * @returns string decrypted _id
+ */
+const decryptId = (id) => {
+  return decryptUnique(id.toHexString());
+}
 
 /**
  * Get AES app key from env
@@ -261,6 +277,8 @@ module.exports = {
   setUserSalt,
   encryptSalt,
   decryptSalt,
+  encryptId,
+  decryptId,
   getCryptId,
   getRecordId,
   base64Encode,
