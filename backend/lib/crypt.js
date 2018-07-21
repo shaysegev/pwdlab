@@ -2,7 +2,15 @@ const CryptoJS = require('crypto-js');
 const cryptoNode = require('crypto');
 const NodeRSA = require('node-rsa');
 
+/**
+ * User's private RSA key
+ */
 let privateKey = null;
+
+/**
+ * User's salt for records encryption
+ */
+let userSalt = null;
 
 /**
  * Generate RSA keys
@@ -21,11 +29,39 @@ const generateRSAKeys = () => {
   return keys;
 }
 
-const generateRecordSalt = () => {
+/**
+ * Generate user's record salt for encryption
+ */
+const generateuserSalt = () => {
   return cryptoNode.randomBytes(Math.ceil(16 / 2)).toString('hex').slice(0, 16);
 }
 
-const addPrivateKey = (key) => {
+/**
+ * Set user's record salt
+ * 
+ * @param string salt
+ * @returns void
+ */
+const setUserSalt = (salt) => {
+  userSalt = salt;
+}
+
+/**
+ * get user's record salt
+ * 
+ * @returns string salt
+ */
+const getUserSalt = () => {
+  return userSalt;
+}
+
+/**
+ * Add user's private RSA key
+ * 
+ * @param string private key
+ * @returns void
+ */
+const setPrivateKey = (key) => {
   privateKey = key;
 }
 
@@ -56,21 +92,21 @@ const decrypt = (text) => {
 /**
  * Encrypt user record salt with app AES key
  * 
- * @param string recordSalt
- * @returns string encrypted recordSalt
+ * @param string userSalt
+ * @returns string encrypted userSalt
  */
-const encryptSalt = (recordSalt) => {
-  return encryptWithAppKey(recordSalt);
+const encryptSalt = (userSalt) => {
+  return encryptWithAppKey(userSalt);
 }
 
 /**
  * Decrypt user record salt with app AES key
  * 
- * @param string recordSalt
- * @returns string decrypted recordSalt
+ * @param string userSalt
+ * @returns string decrypted userSalt
  */
-const decryptSalt = (recordSalt) => {
-  return decryptWithAppKey(recordSalt);
+const decryptSalt = (userSalt) => {
+  return decryptWithAppKey(userSalt);
 }
 
 // const encryptAESKey = AESkey => {
@@ -103,8 +139,8 @@ const getCryptId = ({ _id, email }) => {
 /**
  * Get/generate unique record id based on user's id/salt
  */
-const getRecordId = ({ _id, recordSalt }) => {
-  return CryptoJS.SHA256(_id + recordSalt).toString();  
+const getRecordId = ({ _id, userSalt }) => {
+  return CryptoJS.SHA256(_id + userSalt).toString();  
 }
 
 /**
@@ -207,26 +243,29 @@ const decryptUnique = ciphertext => {
   return decrypted.toString(CryptoJS.enc.Utf8);
 }
 
-// const decryptwithUserAESKey = (ciphertext, key) => {
-//   var bytes  = CryptoJS.AES.decrypt(ciphertext, key);
-//   return bytes.toString(CryptoJS.enc.Utf8);
+// const decryptwithSalt = (ciphertext, salt) => {
+  // var bytes  = CryptoJS.AES.decrypt(ciphertext, salt);
+  // return bytes.toString(CryptoJS.enc.Utf8);
 // }
 
-// const encryptWithUserAESKey = (text, key) => {
-//   return CryptoJS.AES.encrypt(text, key).toString();
+// const encryptWithSalt = (text, salt) => {
+  // return CryptoJS.AES.encrypt(text, salt).toString();
 // }
 
 module.exports = {
   encrypt,
   decrypt,
   generateRSAKeys,
-  generateRecordSalt,
+  generateuserSalt,
+  getUserSalt,
+  setUserSalt,
   encryptSalt,
+  decryptSalt,
   getCryptId,
   getRecordId,
   base64Encode,
   base64Decode,
   encryptUnique,
   decryptUnique,
-  addPrivateKey,
+  setPrivateKey,
 }

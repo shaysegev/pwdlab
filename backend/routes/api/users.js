@@ -27,7 +27,7 @@ router.post('/', async (req, res, next) => {
     // const userExists = user.exists(); // todo
     const token = await user.generateAuthToken();
     // generate salt for hashing/encryption
-    user.generateRecordSalt();
+    user.generateSalt();
 
     // Creating encryption keys
     // todo speed up registration by generating temp RSA keys on visit if user/token is not found

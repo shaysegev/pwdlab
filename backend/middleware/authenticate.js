@@ -20,16 +20,20 @@ const authenticate = async (req, res, next) => {
       return res.status(401).send();
     }
     user.email = cryptLib.decryptUnique(user.email);
-    user.recordSalt = cryptLib.decryptSalt(user.recordSalt);
+    user.salt = cryptLib.decryptSalt(user.salt);
+    cryptLib.setUserSalt(user.salt);
 
     // Adding the user's private key to be accessible within the app
     const privateKey = await Crypt.getUserKey('privkey', user);
-    cryptLib.addPrivateKey(privateKey);
+    cryptLib.setPrivateKey(privateKey);
     
     req.user = user;
     req.token = token;
     next();
   } catch (e) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log(e)
+    }
     res.status(401).send();
   }
 };

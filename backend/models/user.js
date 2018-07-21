@@ -22,7 +22,7 @@ const UserSchema = mongoose.Schema({
     required: true,
     minlength: 6
   },
-  recordSalt: {
+  salt: {
     type: String,
     required: true
   },
@@ -70,12 +70,12 @@ UserSchema.methods.generateAuthToken = function() {
 /**
  * Generate user's salt for storing records
  */
-UserSchema.methods.generateRecordSalt = function() {
+UserSchema.methods.generateSalt = function() {
   const user = this;
-  let recordSalt = cryptLib.generateRecordSalt();
-  recordSalt = cryptLib.encryptSalt(recordSalt);
+  let salt = cryptLib.generateSalt();
+  salt = cryptLib.encryptSalt(salt);
 
-  user.recordSalt = recordSalt;
+  user.salt = salt;
 }
 /**
  * Removes token from database
