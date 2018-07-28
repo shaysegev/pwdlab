@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { addPublicKey } from '../lib/crypt'
-import { setToken } from '../auth'
+import { initAuthIdleTimeout, setToken, deleteToken } from '../auth'
 import { userRoutes } from '../apiConfig'
 
 const login = ({ _id, email }) => ({
@@ -15,6 +15,7 @@ const startLogin = (credentials) => {
       const res = await axios.post(userRoutes.login, credentials)
       if (res.data.success) {
         setToken(res.headers.authorization)
+        initAuthIdleTimeout()
         addPublicKey(res.data.key)
         dispatch(login(res.data))
         return {success: true}
@@ -33,7 +34,11 @@ const logout = () => ({
 })
 
 const startLogout = () => {
-  // todo
+  return async (dispatch) => {
+    await axios.post(userRoutes.logout)
+    deleteToken()
+    dispatch(logout())
+  }
 }
 
 const startSignUp = (newUser) => {

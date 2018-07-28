@@ -1,6 +1,8 @@
 import axios from 'axios'
 import { addPublicKey } from './lib/crypt'
 import { userRoutes } from './apiConfig'
+import { startLogout } from './actions/auth'
+import store from './store'
 
 /**
  * Auth count to idle
@@ -30,7 +32,6 @@ const setAuthInterceptor = () => {
     let res = err.response;
     if (res.status === 401) {
       deleteToken()
-      window.location.href = '/'
     }
   })
 }
@@ -41,29 +42,29 @@ const setAuthInterceptor = () => {
  * @returns void
  */
 const initAuthIdleTimeout = () => {
-  window.onload = resetAuthTimer
-  window.onmousemove = resetAuthTimer
-  window.onmousedown = resetAuthTimer
-  window.ontouchstart = resetAuthTimer
-  window.onclick = resetAuthTimer
-  window.onkeypress = resetAuthTimer
-  window.addEventListener('scroll', resetAuthTimer, true)
+  window.onload = setAuthTimer
+  window.onmousemove = setAuthTimer
+  window.onmousedown = setAuthTimer
+  window.ontouchstart = setAuthTimer
+  window.onclick = setAuthTimer
+  window.onkeypress = setAuthTimer
+  window.addEventListener('scroll', setAuthTimer, true)
 }
 
 /**
- * Reset timer on user action
+ * Clear and set auth timer on user activity
+ * 
+ * @returns void
  */
-const resetAuthTimer = () => {
+const setAuthTimer = () => {
   clearTimeout(authTimeoutCounter)
-  authTimeoutCounter = setTimeout(logout, 60000 * 30) // 30 minutes
-}
-
-/**
- * Logout user
- */
-const logout = () => {
-  console.log('logout')
-  // todo logout / popup?
+  if (!store.getState().auth.uid) {
+    return
+  }
+  authTimeoutCounter = setTimeout(() => {
+    // todo verify user activity
+    store.dispatch(startLogout())
+  }, 60000 * 30) // 30 minutes
 }
 
 /**

@@ -23,7 +23,6 @@ class LoginForm extends React.Component {
         
         this.setState({ loading: false })
         if (res.success) {
-          this.props.history.push('/dashboard')            
           this.setState({ alertType: 'success', alert: 'You have successfully logged in.' })
         } else {
           this.setState({ alertType: 'error', alert: res.msg })

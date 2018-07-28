@@ -98,8 +98,9 @@ router.get('/test', async (req, res, next) => {
 
 
 
-router.post('/logout', async (req, res, next) => {
-
+router.post('/logout', authenticate, async (req, res, next) => {
+  await req.user.removeToken(req.token)
+  res.send({success: true})
 });
 
 module.exports = router;

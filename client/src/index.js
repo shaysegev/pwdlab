@@ -1,49 +1,63 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import configureStore from './store'
+import store from './store'
 import AppRouter, { history } from './routes/AppRouter'
 import LoadingPage from 'Components/LoadingPage'
 import registerServiceWorker from './registerServiceWorker'
-import { setAuthInterceptor, initAuthIdleTimeout, verifyToken, deleteToken } from './auth'
+import { setAuthInterceptor, initAuthIdleTimeout, verifyToken } from './auth'
 import { login, logout } from 'Actions/auth'
+import { startSetRecords } from 'Actions/record'
 
 setAuthInterceptor()
-const store = configureStore()
 
 const App = (
   <Provider store={store}>
     <AppRouter />
   </Provider>
-);
+)
 
-let hasRendered = false
 const renderApp = () => {
-  if (!hasRendered) {
-    ReactDOM.render(App, document.getElementById('root'))
-    hasRendered = true
-  }
+  ReactDOM.render(App, document.getElementById('root'))
 }
 
 ReactDOM.render(<LoadingPage />, document.getElementById('root'))
 
-const initAuth = async () => {
+const initApp = async () => {
   const res = await verifyToken()
   
   if (res.success) {
     store.dispatch(login(res))
     initAuthIdleTimeout()
-    renderApp()
     if (history.location.pathname === '/') {
       history.push('/dashboard')
     }
+    renderApp()
+    await store.dispatch(startSetRecords())
+    store.subscribe(handleAuthChange)
   } else {
     store.dispatch(logout())
-    deleteToken()
-    renderApp()
     history.push('/')
+    renderApp()
   }
 }
 
-initAuth()
+let currentAuthState
+
+/**
+ * Re-initialise app if auth state changes
+ */
+function handleAuthChange() {
+  let previousAuthState = currentAuthState
+  currentAuthState = store.getState().auth.uid
+  if (previousAuthState !== currentAuthState) {
+    reinitApp()
+  }
+}
+
+function reinitApp() {
+  initApp()
+}
+
+initApp()
 registerServiceWorker()
