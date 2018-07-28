@@ -39,6 +39,7 @@ const initApp = async () => {
     store.dispatch(logout())
     history.push('/')
     renderApp()
+    store.subscribe(handleAuthChange)
   }
 }
 

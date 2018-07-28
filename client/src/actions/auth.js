@@ -20,10 +20,10 @@ const startLogin = (credentials) => {
         dispatch(login(res.data))
         return {success: true}
       }
-    } catch(e) {
+    } catch(err) {
       return {
         success: false,
-        msg: e.response.data.msg || 'Error occurred, please try again later.'
+        msg: err.response.data.msg || 'Error occurred, please try again later.'
       }
     }
   }
@@ -51,10 +51,10 @@ const startSignUp = (newUser) => {
         dispatch(login(res.data))
         return {success: true}
       }
-    } catch(e) {
+    } catch(err) {
       return {
         success: false,
-        msg: e.response.data.msg || 'Error occurred, please try again later.'
+        msg: err.response.data.msg || 'Error occurred, please try again later.'
       }
     }
   }

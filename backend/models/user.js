@@ -152,7 +152,7 @@ UserSchema.statics.findByCredentials = function({email, password}) {
           user.email = cryptLib.decryptUnique(user.email);
           resolve(user);
         } else {
-          reject();
+          reject('Incorrect email/password');
         }
       });
     });

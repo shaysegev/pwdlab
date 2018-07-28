@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { addPublicKey } from './lib/crypt'
 import { userRoutes } from './apiConfig'
-import { startLogout } from './actions/auth'
+import { logout, startLogout } from './actions/auth'
 import store from './store'
 
 /**
@@ -28,12 +28,17 @@ const setAuthInterceptor = () => {
     error => Promise.reject(error)
   )
 
-  axios.interceptors.response.use(undefined, err => {
+  axios.interceptors.response.use((response) => {
+    return response;
+  }, function (err) {
     let res = err.response;
     if (res.status === 401) {
       deleteToken()
+      store.dispatch(logout())
+      // todo with message    
     }
-  })
+    return Promise.reject(err);
+  });
 }
 
 /**

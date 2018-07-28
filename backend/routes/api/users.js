@@ -61,7 +61,7 @@ router.post('/login', async (req, res, next) => {
   try {
     const user = await User.findByCredentials(body);
     if (!user) {
-      res.status(400).send({success: false});
+      res.status(400).send({success: false, msg: 'Incorrect email/password'});
     }
     // Get user's public key
     pubkey = await Crypt.getUserKey('pubkey', user);
