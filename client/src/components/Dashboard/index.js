@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom'
-import { Layout, Menu, Icon } from 'antd'
+import { connect } from 'react-redux'
+
+import { Layout } from 'antd'
 import './Dashboard.less'
 import '../../styles/dashboard/responsive.less'
 
@@ -11,20 +13,31 @@ import Record from './Record'
 const { Header, Footer, Content } = Layout
 
 class App extends Component {
+  state = {
+    record: null
+  }
+
+  displayRecord = (recordId) => {
+    let record = this.props.records.find((record, id) => {
+      return recordId === id
+    })
+    this.setState({ record })
+  }
+
   render() {
     return (
       <div className="dashboard">
-        <Sidebar className="sidebar" />
+        <Sidebar records={this.props.records} displayRecord={this.displayRecord} className="sidebar" />
         
         <Layout className="dashboard-content">
           <Header style={{ background: '#fff', padding: 0 }}>
-            <Searchbar />
+            <Searchbar records={this.props.records} displayRecord={this.displayRecord} />
           </Header>
           <Content>
-            <Record />
+            <Record record={this.state.record} />
           </Content>
           <Footer style={{ textAlign: 'center' }}>
-            Ant Design ©2016 Created by Ant UED
+            TODO
           </Footer>
         </Layout>
       </div>
@@ -32,4 +45,10 @@ class App extends Component {
   }
 }
 
- export default withRouter(App)
+const mapStateToProps = (state) => {
+  return {
+    records: state.record
+  }
+}
+
+export default withRouter(connect(mapStateToProps)(App))

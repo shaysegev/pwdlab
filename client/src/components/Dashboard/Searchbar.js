@@ -1,6 +1,4 @@
-import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom'
-import { Layout, Menu } from 'antd'
+import React from 'react'
 
 import { Icon, Button, Input, AutoComplete } from 'antd';
 
@@ -11,44 +9,48 @@ class Searchbar extends React.Component {
     dataSource: [],
   }
 
-  onSelect(value) {
-    console.log('onSelect', value);
-  }
-  
-  getRandomInt(max, min = 0) {
-    return Math.floor(Math.random() * (max - min + 1)) + min; // eslint-disable-line no-mixed-operators
+  onSelect = (index) => {
+    this.props.displayRecord(parseInt(index))
   }
   
   searchResult(query) {
-    return (new Array(this.getRandomInt(5))).join('.').split('.')
-      .map((item, idx) => ({
-        query,
-        category: `${query}${idx}`,
-        count: this.getRandomInt(200, 100),
-      }));
+    return this.props.records.map((record, index) => {
+      // Display matching titles first
+      if (record.title.toLowerCase().includes(query)) {
+        return {
+          query,
+          index,
+          option: record.title,
+        }
+      }
+      // No title found, do we have a url match?
+      if (record.url.toLowerCase().includes(query)) {
+        return {
+          query,
+          index,
+          option: record.url,
+        }
+      }
+      // Clear all undefined results
+    }).filter(record => typeof record !== 'undefined');
   }
   
   renderOption(item) {
     return (
-      <Option key={item.category} text={item.category}>
-        {item.query} 在
-        <a
-          href={`https://s.taobao.com/search?q=${item.query}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {item.category}
-        </a>
-        区块中
-        <span className="global-search-item-count">约 {item.count} 个结果</span>
+      <Option key={item.index} text={item.option}>
+        {item.option}
       </Option>
     );
   }
 
   handleSearch = (value) => {
-    this.setState({
-      dataSource: value ? this.searchResult(value) : [],
-    });
+    let result
+    if (!value) {
+      result = []
+    } else {
+      result = this.searchResult(value)
+    }
+    this.setState({ dataSource: result });
   }
 
   render() {
@@ -62,7 +64,7 @@ class Searchbar extends React.Component {
             dataSource={this.state.dataSource.map(this.renderOption)}
             onSelect={this.onSelect}
             onSearch={this.handleSearch}
-            placeholder="input here"
+            placeholder="Search your passwords"
             optionLabelProp="text"
           >
             <Input
