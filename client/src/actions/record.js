@@ -2,17 +2,17 @@ import axios from 'axios'
 import { encrypt } from '../lib/crypt'
 import { recordRoutes } from '../apiConfig'
 
-const addRecord = (record) => ({
-  type: 'ADD_RECORD',
+const saveRecord = (record) => ({
+  type: 'SAVE_RECORD',
   record
 })
 
-const startAddRecord = (record = {}) => {
+const startSaveRecord = (record = {}) => {
   return async (dispatch, getState) => {
     try {
       const res = await axios.post(recordRoutes.default, {_: encrypt(JSON.stringify(record))})
       if (res.data.success) {
-        dispatch(addRecord(record))
+        dispatch(saveRecord(record))
         return {success: true}
       }
     } catch(e) {
@@ -24,15 +24,6 @@ const startAddRecord = (record = {}) => {
   }
 }
 
-const editRecord = (record) => ({
-  type: 'EDIT_RECORD',
-  record
-})
-
-const startEditRecord = () => {
-  // todo
-}
-
 const deleteRecord = (recordId) => ({
   type: 'DELETE_RECORD',
   recordId
@@ -42,18 +33,30 @@ const startDeleteRecord = () => {
   // todo
 }
 
-const getRecords = (records) => ({
-  type: 'GET_RECORDS',
+const setRecords = (records) => ({
+  type: 'SET_RECORDS',
   records
 })
 
-const startGetRecords = () => {
-  // todo
+const startSetRecords = () => {
+  return async (dispatch, getState) => {
+    try {
+      const res = await axios.get(recordRoutes.default)
+      if (res.data.success) {
+        dispatch(setRecords(res.data.records))
+        return {success: true}
+      }
+    } catch(e) {
+      return {
+        success: false,
+        msg: `Could not get records, please try again later.`
+      }
+    }
+  }
 }
 
 export {
-  startAddRecord,
-  startEditRecord,
+  startSaveRecord,
   startDeleteRecord,
-  startGetRecords
+  startSetRecords
 }

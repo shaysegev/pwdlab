@@ -1,4 +1,8 @@
+import { decrypt } from '../lib/crypt'
+
 const recordsReducerDefaultState = []
+
+const recordKeysToDecrypt = ['title', 'url', 'password', 'login', 'notes']
 
 export default (state = recordsReducerDefaultState, action) => {  
   switch (action.type) {
@@ -8,8 +12,15 @@ export default (state = recordsReducerDefaultState, action) => {
       return {}
     case 'REMOVE_RECORD':
       return {}
-    case 'SET_RECORD':
-      return {}
+    case 'SET_RECORDS':
+      return action.records.map((record) => {
+        recordKeysToDecrypt.forEach((key) => {
+          if (record[key] !== null && record[key] !== '') {
+            record[key] = decrypt(record[key]).toString()
+          }
+        })
+        return record;
+      })
     default:
       return state
   }

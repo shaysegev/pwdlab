@@ -25,7 +25,13 @@ router.post('/', authenticate, async (req, res) => {
 })
 
 router.get('/', authenticate, async (req, res) => {
-  // todo verify user with rid before proceeding
+  // Getting the user unique Record id for fetching records
+  const rid = cryptLib.getRecordId(req.user._id, req.user.salt)
+  const records = await Record.find({ rid })
+  if (records) {
+    res.send({success: true, records})
+  }
+
 })
 
 module.exports = router;
