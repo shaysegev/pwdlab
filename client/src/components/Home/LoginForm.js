@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { startLogin } from 'Actions/auth'
+import { startLogin, login } from 'Actions/auth'
 
 import { Form, Alert, Icon, Input, Button, Checkbox } from 'antd'
 const FormItem = Form.Item
@@ -20,10 +20,10 @@ class LoginForm extends React.Component {
         this.setState({ loading: true, alert: false })
 
         const res = await this.props.startLogin(values)
-        
         this.setState({ loading: false })
         if (res.success) {
           this.setState({ alertType: 'success', alert: 'You have successfully logged in.' })
+          this.props.login(res.user)
         } else {
           this.setState({ alertType: 'error', alert: res.msg })
         }        
@@ -78,7 +78,8 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-    startLogin: (user) => dispatch(startLogin(user))
+    startLogin: (user) => dispatch(startLogin(user)),
+    login: (user) => dispatch(login(user))
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(WrappedLoginForm))

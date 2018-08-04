@@ -17,8 +17,7 @@ const startLogin = (credentials) => {
         setToken(res.headers.authorization)
         initAuthIdleTimeout()
         addPublicKey(res.data.key)
-        dispatch(login(res.data))
-        return {success: true}
+        return {success: true, user: res.data}
       }
     } catch(err) {
       return {
