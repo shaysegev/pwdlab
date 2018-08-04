@@ -2,17 +2,17 @@ import axios from 'axios'
 import { encrypt } from '../lib/crypt'
 import { recordRoutes } from '../apiConfig'
 
-const saveRecord = (record) => ({
-  type: 'SAVE_RECORD',
+const addRecord = (record) => ({
+  type: 'ADD_RECORD',
   record
 })
 
-const startSaveRecord = (record = {}) => {
+const startAddRecord = (record = {}) => {
   return async (dispatch, getState) => {
     try {
-      const res = await axios.post(recordRoutes.default, {_: encrypt(JSON.stringify(record))})
+      const res = axios.post(recordRoutes.default, {_: encrypt(JSON.stringify(record))})
       if (res.data.success) {
-        dispatch(saveRecord(record))
+        dispatch(addRecord(record))
         return {success: true}
       }
     } catch(e) {
@@ -22,6 +22,15 @@ const startSaveRecord = (record = {}) => {
       }
     }
   }
+}
+
+const editRecord = (record) => ({
+  type: 'EDIT_RECORD',
+  record
+})
+
+const startEditRecord = (record = {}) => {
+  // todo
 }
 
 const deleteRecord = (recordId) => ({
@@ -56,7 +65,8 @@ const startSetRecords = () => {
 }
 
 export {
-  startSaveRecord,
+  startAddRecord,
+  startEditRecord,
   startDeleteRecord,
   startSetRecords
 }
