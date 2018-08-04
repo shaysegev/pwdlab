@@ -15,11 +15,11 @@ export default (state = recordsReducerDefaultState, action) => {
     case 'SET_RECORDS':
       return action.records.map((record) => {
         recordKeysToDecrypt.forEach((key) => {
-          if (record[key] !== null && record[key] !== '') {
+          if (record[key] && record[key] !== '') {
             record[key] = decrypt(record[key]).toString()
           }
         })
-        return record;
+        return record
       })
     default:
       return state
