@@ -13,13 +13,12 @@ class EditRecord extends React.Component {
   }
 
   handleEditRecord = () => {
-
+    // todo
   }
 
   render() {
     return (
       <RecordForm 
-        record={this.props.record}
         handleRecordForm={this.handleEditRecord}
       />
     )

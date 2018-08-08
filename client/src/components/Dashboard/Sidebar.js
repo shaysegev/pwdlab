@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
 import { Layout, Menu } from 'antd'
 
@@ -26,8 +27,6 @@ class Sidebar extends React.Component {
           breakpoint="lg"
           collapsedWidth="0"
           width="300px"
-          onBreakpoint={(broken) => { console.log(broken); }}
-          onCollapse={(collapsed, type) => { console.log(collapsed, type)}}
           style={{ overflow: 'auto', height: '100vh', position: 'fixed' }}
           >
             <h1 className="logo">Pwdlab</h1>
@@ -42,4 +41,8 @@ class Sidebar extends React.Component {
   }
 }
 
-export default Sidebar
+const mapStateToProps = (state) => ({
+  records: state.record,
+})
+
+export default connect(mapStateToProps)(Sidebar)

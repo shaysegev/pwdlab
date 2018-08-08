@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux'
 import AuthReducer from './AuthReducer'
 import RecordReducer from './RecordReducer'
+import RecordFormReducer from './RecordFormReducer'
 
 export default combineReducers({
   auth: AuthReducer,
-  record: RecordReducer
+  record: RecordReducer,
+  recordForm: RecordFormReducer,
 })

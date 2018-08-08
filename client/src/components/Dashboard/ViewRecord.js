@@ -6,7 +6,7 @@ import RecordForm from './RecordForm'
 class ViewRecord extends React.Component {
   render() {
     return (
-      <RecordForm record={this.props.record} />
+      <RecordForm />
     )
   }
 }

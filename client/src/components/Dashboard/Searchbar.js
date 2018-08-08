@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
 import { Icon, Button, Input, AutoComplete } from 'antd';
 
@@ -84,4 +85,8 @@ class Searchbar extends React.Component {
 
 // todo github/logout icons
 
-export default Searchbar
+const mapStateToProps = (state) => ({
+  records: state.record,
+})
+
+export default connect(mapStateToProps)(Searchbar)

@@ -1,50 +1,53 @@
 import React from 'react'
-import { Button, Spin } from 'antd'
+import { Button, Spin, Row } from 'antd'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+
+import RecordHeader from 'Components/Dashboard/RecordHeader'
 import ViewRecord from 'Components/Dashboard/ViewRecord'
 import AddRecord from 'Components/Dashboard/AddRecord'
 import EditRecord from 'Components/Dashboard/EditRecord'
 
-/**
- * Record initialised mode state
- */
-const INIT_MODE = 'init'
+import {
+  setInitRecordMode,
+  setViewRecordMode,
+  setAddRecordMode,
+  setEditRecordMode
+} from 'Actions/recordForm'
 
-/**
- * Record on view mode
- */
-const VIEW_RECORD_MODE = 'view'
-
-/**
- * Adding new record
- */
-const ADD_RECORD_MODE = 'add'
-
-/**
- * Editing record
- */
-const EDIT_RECORD_MODE = 'edit'
+import { 
+  INIT_MODE,
+  VIEW_RECORD_MODE,
+  ADD_RECORD_MODE,
+  EDIT_RECORD_MODE
+} from 'Actions/types/recordForm'
 
 class Record extends React.Component {
   state = {
-    mode: INIT_MODE,
     initLoading: true,
     actionLoading: false,
+  }
+
+  componentDidMount() {
+    this.props.setInitRecordMode()
   }
 
   componentDidUpdate(props) {
     if (props.records.length !== this.props.records.length) {
       this.setState({initLoading: false})
     }
-
-    if (this.props.record !== props.record) {
-      this.setState({ mode: VIEW_RECORD_MODE })
-    }
   }
 
   addRecord = () => {
-    this.setState({ mode: ADD_RECORD_MODE })
+    this.props.setAddRecordMode()
+  }
+  
+  editRecord = () => {
+    this.props.setEditRecordMode(this.props.record)
+  }
+
+  deleteRecord = () => {
+    // todo
   }
 
   displayLoading() {
@@ -72,33 +75,47 @@ class Record extends React.Component {
       return this.displayLoading()
     }
 
-    if (this.state.mode === INIT_MODE && this.props.record === null) {
+    if (this.props.mode === INIT_MODE && this.props.record === null) {
       return this.displayInitialScreen()
     }
 
     let recordForm
-    if (this.state.mode === VIEW_RECORD_MODE) {
-      recordForm = <ViewRecord record={this.props.record} />
-    } else if (this.state.mode === ADD_RECORD_MODE) {
-      recordForm = <AddRecord record={this.props.record} />
-    } else {
-      recordForm = <EditRecord record={this.props.record} />
+    if (this.props.mode === VIEW_RECORD_MODE) {
+      recordForm = <ViewRecord />
+    } else if (this.props.mode === ADD_RECORD_MODE) {
+      recordForm = <AddRecord />
+    } else if (this.props.mode === EDIT_RECORD_MODE) {
+      recordForm = <EditRecord />
     }
 
     return (
       <div>
-        {/* todo little header with buttons add/edit */}
-         {recordForm}
+        <RecordHeader
+          mode={this.props.mode}
+          addRecord={this.addRecord}
+          editRecord={this.editRecord}
+          deleteRecord={this.deleteRecord}
+        />
+        {React.cloneElement(
+          recordForm, 
+          {record:this.props.record, mode: this.props.mode}
+        )}
       </div>
     )
   }
 }
 
-const mapStateToProps = (state) => {
-  console.log(state)
-  return {
-    records: state.record
-  }    
-}
+const mapStateToProps = (state) => ({
+  records: state.record,
+  record: state.recordForm.record,
+  mode: state.recordForm.mode
+})
 
-export default withRouter(connect(mapStateToProps)(Record))
+const mapDispatchToProps = (dispatch) => ({
+  setInitRecordMode: () => dispatch(setInitRecordMode()),
+  setViewRecordMode: (record) => dispatch(setViewRecordMode(record)),
+  setAddRecordMode: () => dispatch(setAddRecordMode()),
+  setEditRecordMode: (record) => dispatch(setEditRecordMode(record))
+})
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Record))

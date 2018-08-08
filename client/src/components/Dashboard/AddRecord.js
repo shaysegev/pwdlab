@@ -26,7 +26,6 @@ class AddRecord extends React.Component {
   render() {
     return (
       <RecordForm 
-        record={this.props.record}
         handleRecordForm={this.handleAddRecord}
       />
     )

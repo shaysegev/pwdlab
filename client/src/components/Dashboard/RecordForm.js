@@ -1,7 +1,14 @@
 import React from 'react'
-import { Form, Input, Tooltip, Icon,  Button, Spin, message } from 'antd'
+import { Form, Input, Tooltip, Icon, Row, Button, Spin, message } from 'antd'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+
+import { 
+  INIT_MODE,
+  VIEW_RECORD_MODE,
+  ADD_RECORD_MODE,
+  EDIT_RECORD_MODE
+} from 'Actions/types/recordForm'
 
 const FormItem = Form.Item;
 
@@ -36,7 +43,7 @@ class RecordForm extends React.Component {
             {getFieldDecorator('title', {
               rules: [{ required: true, message: 'A title is required' }],
             })(
-              <Input />
+              <Input disabled={this.props.mode === VIEW_RECORD_MODE} />
             )}
           </FormItem>
           <FormItem
@@ -46,7 +53,7 @@ class RecordForm extends React.Component {
             {getFieldDecorator('url', {
               rules: [{ required: true, message: 'Url is required' }],
             })(
-              <Input />
+              <Input disabled={this.props.mode === VIEW_RECORD_MODE} />
             )}
           </FormItem>
           <FormItem
@@ -56,7 +63,7 @@ class RecordForm extends React.Component {
             {getFieldDecorator('login', {
               rules: [{ required: true, message: 'Login name/email is required' }],
             })(
-              <Input />
+              <Input disabled={this.props.mode === VIEW_RECORD_MODE} />
             )}
           </FormItem>
           <FormItem
@@ -68,7 +75,7 @@ class RecordForm extends React.Component {
                 required: true, message: 'A password is required',
               }],
             })(
-              <Input type="password" />
+              <Input disabled={this.props.mode === VIEW_RECORD_MODE} type="password" />
             )}
           </FormItem>
           <FormItem
@@ -87,11 +94,8 @@ class RecordForm extends React.Component {
                 required: false,
               }],
             })(
-              <Input type="notes" />
+              <Input disabled={this.props.mode === VIEW_RECORD_MODE} type="notes" />
             )}
-          </FormItem>
-          <FormItem {...formItemLayout}>
-            <Button type="primary" htmlType="submit">Save</Button>
           </FormItem>
         </Form>
       </div>
@@ -101,7 +105,8 @@ class RecordForm extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    records: state.record
+    record: state.recordForm.record,
+    mode: state.recordForm.mode
   }
 }
 
