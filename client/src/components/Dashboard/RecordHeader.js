@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Row, Button } from 'antd'
 
 import { 
@@ -16,20 +17,22 @@ class RecordHeader extends React.Component {
     return (
       <div>
         <Row type="flex" justify="end" className="record-header">
-         {this.props.mode !== ADD_RECORD_MODE &&
-          <Button type="primary" onClick={this.props.addRecord}>New Record</Button>}
          {this.props.mode === VIEW_RECORD_MODE && 
           <div>
-            <Button type="primary" onClick={this.props.editRecord}>Edit</Button>
-            <Button type="primary" onClick={this.props.deleteRecord}>Delete</Button>
+            <Button type="primary" icon="form" onClick={this.props.editRecord}>Edit</Button>
+            <Button type="primary" icon="close" onClick={this.props.deleteRecord}>Delete</Button>
           </div>
         }
           {this.displaySaveButton() && 
-          <Button type="primary" className="record-save" onClick={this.handleSubmit}>Save</Button>}
+          <Button type="primary" className="record-save" onClick={this.props.handleSubmit}>Save</Button>}
         </Row>
       </div>
     )
   }
 }
 
-export default RecordHeader
+const mapStateToProps = (state) => ({
+  mode: state.recordForm.mode
+})
+
+export default connect(mapStateToProps)(RecordHeader)

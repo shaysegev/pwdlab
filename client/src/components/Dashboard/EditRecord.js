@@ -12,14 +12,14 @@ class EditRecord extends React.Component {
     actionLoading: false,
   }
 
-  handleEditRecord = () => {
+  handleEditRecord = async (record) => {
     // todo
   }
 
   render() {
     return (
       <RecordForm 
-        handleRecordForm={this.handleEditRecord}
+        handleSubmit={this.handleEditRecord}
       />
     )
   }

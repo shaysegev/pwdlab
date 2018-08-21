@@ -10,10 +10,10 @@ const addRecord = (record) => ({
 const startAddRecord = (record = {}) => {
   return async (dispatch, getState) => {
     try {
-      const res = axios.post(recordRoutes.default, {_: encrypt(JSON.stringify(record))})
+      const res = await axios.post(recordRoutes.default, {_: encrypt(JSON.stringify(record))})
       if (res.data.success) {
         dispatch(addRecord(record))
-        return {success: true}
+        return {success: true, record}
       }
     } catch(e) {
       return {

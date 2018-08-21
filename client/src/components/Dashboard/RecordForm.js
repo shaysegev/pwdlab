@@ -3,24 +3,34 @@ import { Form, Input, Tooltip, Icon, Row, Button, Spin, message } from 'antd'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import { 
-  INIT_MODE,
-  VIEW_RECORD_MODE,
-  ADD_RECORD_MODE,
-  EDIT_RECORD_MODE
-} from 'Actions/types/recordForm'
+import RecordHeader from 'Components/Dashboard/RecordHeader'
+
+import {
+  setViewRecordMode,
+  setAddRecordMode,
+  setEditRecordMode
+} from 'Actions/recordForm'
+
+import { VIEW_RECORD_MODE } from 'Actions/types/recordForm'
 
 const FormItem = Form.Item;
 
-class RecordForm extends React.Component {
+class RecordForm extends React.Component {  
+  editRecord = () => {
+    this.props.setEditRecordMode(this.props.record)
+  }
+
+  deleteRecord = () => {
+    // todo
+  }
+
   handleSubmit = async (e) => {
     e.preventDefault()
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (err) {
         return message.error('Please fill all the required fields', 2.5)
       }
-      
-      this.props.handleRecordForm(values)
+      this.props.handleSubmit(values)
     });
   }
 
@@ -34,71 +44,78 @@ class RecordForm extends React.Component {
     }
 
     return (
-      <div className="record">
-        <Form onSubmit={this.handleSubmit} layout="vertical">
-          <FormItem
-            {...formItemLayout}
-            label="Title"
-          >
-            {getFieldDecorator('title', {
-              rules: [{ required: true, message: 'A title is required' }],
-            })(
-              <Input disabled={this.props.mode === VIEW_RECORD_MODE} />
-            )}
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="Website URL"
-          >
-            {getFieldDecorator('url', {
-              rules: [{ required: true, message: 'Url is required' }],
-            })(
-              <Input disabled={this.props.mode === VIEW_RECORD_MODE} />
-            )}
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="Login name/email"
-          >
-            {getFieldDecorator('login', {
-              rules: [{ required: true, message: 'Login name/email is required' }],
-            })(
-              <Input disabled={this.props.mode === VIEW_RECORD_MODE} />
-            )}
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="Password"
-          >
-            {getFieldDecorator('password', {
-              rules: [{
-                required: true, message: 'A password is required',
-              }],
-            })(
-              <Input disabled={this.props.mode === VIEW_RECORD_MODE} type="password" />
-            )}
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label={(
-              <span>
-                Notes&nbsp;
-                <Tooltip title="Personal notes">
-                  <Icon type="question-circle-o" />
-                </Tooltip>
-              </span>
-            )}
-          >
-            {getFieldDecorator('notes', {
-              rules: [{
-                required: false,
-              }],
-            })(
-              <Input disabled={this.props.mode === VIEW_RECORD_MODE} type="notes" />
-            )}
-          </FormItem>
-        </Form>
-      </div>
+      <div>
+        <RecordHeader
+          handleSubmit={this.handleSubmit}
+          editRecord={this.editRecord}
+          deleteRecord={this.deleteRecord}
+        />
+        <div className="record">
+          <Form layout="vertical">
+            <FormItem
+              {...formItemLayout}
+              label="Title"
+            >
+              {getFieldDecorator('title', {
+                rules: [{ required: true, message: 'A title is required' }],
+              })(
+                <Input size="large" disabled={this.props.mode === VIEW_RECORD_MODE} />
+              )}
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label="Website URL"
+            >
+              {getFieldDecorator('url', {
+                rules: [{ required: true, message: 'Url is required' }],
+              })(
+                <Input size="large" disabled={this.props.mode === VIEW_RECORD_MODE} />
+              )}
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label="Login name/email"
+            >
+              {getFieldDecorator('login', {
+                rules: [{ required: true, message: 'Login name/email is required' }],
+              })(
+                <Input size="large" disabled={this.props.mode === VIEW_RECORD_MODE} />
+              )}
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label="Password"
+            >
+              {getFieldDecorator('password', {
+                rules: [{
+                  required: true, message: 'A password is required',
+                }],
+              })(
+                <Input size="large" disabled={this.props.mode === VIEW_RECORD_MODE} type="password" />
+              )}
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label={(
+                <span>
+                  Notes&nbsp;
+                  <Tooltip title="Personal notes">
+                    <Icon type="question-circle-o" />
+                  </Tooltip>
+                </span>
+              )}
+            >
+              {getFieldDecorator('notes', {
+                rules: [{
+                  required: false,
+                }],
+              })(
+                <Input size="large" disabled={this.props.mode === VIEW_RECORD_MODE} type="notes" />
+              )}
+            </FormItem>
+          </Form>
+        </div>
+      </div>      
     );
   }
 }
@@ -109,6 +126,11 @@ const mapStateToProps = (state) => {
     mode: state.recordForm.mode
   }
 }
+
+const mapDispatchToProps = (dispatch) => ({
+  setViewRecordMode: (record) => dispatch(setViewRecordMode(record)),
+  setEditRecordMode: (record) => dispatch(setEditRecordMode(record))
+})
 
 const WrappedRecord = Form.create({
   mapPropsToFields(props) {
@@ -128,4 +150,4 @@ const WrappedRecord = Form.create({
     return populatedForm
   }})(RecordForm)
 
-export default withRouter(connect(mapStateToProps)(WrappedRecord))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(WrappedRecord))

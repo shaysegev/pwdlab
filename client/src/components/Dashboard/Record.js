@@ -3,17 +3,11 @@ import { Button, Spin, Row } from 'antd'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import RecordHeader from 'Components/Dashboard/RecordHeader'
 import ViewRecord from 'Components/Dashboard/ViewRecord'
 import AddRecord from 'Components/Dashboard/AddRecord'
 import EditRecord from 'Components/Dashboard/EditRecord'
 
-import {
-  setInitRecordMode,
-  setViewRecordMode,
-  setAddRecordMode,
-  setEditRecordMode
-} from 'Actions/recordForm'
+import { setInitRecordMode } from 'Actions/recordForm'
 
 import { 
   INIT_MODE,
@@ -36,18 +30,6 @@ class Record extends React.Component {
     if (props.records.length !== this.props.records.length) {
       this.setState({initLoading: false})
     }
-  }
-
-  addRecord = () => {
-    this.props.setAddRecordMode()
-  }
-  
-  editRecord = () => {
-    this.props.setEditRecordMode(this.props.record)
-  }
-
-  deleteRecord = () => {
-    // todo
   }
 
   displayLoading() {
@@ -90,16 +72,7 @@ class Record extends React.Component {
 
     return (
       <div>
-        <RecordHeader
-          mode={this.props.mode}
-          addRecord={this.addRecord}
-          editRecord={this.editRecord}
-          deleteRecord={this.deleteRecord}
-        />
-        {React.cloneElement(
-          recordForm, 
-          {record:this.props.record, mode: this.props.mode}
-        )}
+        {React.cloneElement(recordForm)}
       </div>
     )
   }
@@ -112,10 +85,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  setInitRecordMode: () => dispatch(setInitRecordMode()),
-  setViewRecordMode: (record) => dispatch(setViewRecordMode(record)),
-  setAddRecordMode: () => dispatch(setAddRecordMode()),
-  setEditRecordMode: (record) => dispatch(setEditRecordMode(record))
+  setInitRecordMode: () => dispatch(setInitRecordMode())
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Record))

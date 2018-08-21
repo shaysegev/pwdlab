@@ -7,7 +7,10 @@ const recordKeysToDecrypt = ['title', 'url', 'password', 'login', 'notes']
 export default (state = recordsReducerDefaultState, action) => {  
   switch (action.type) {
     case 'ADD_RECORD':
-      return {}
+      return [
+        ...state,
+        action.record
+      ]
     case 'EDIT_RECORD':
       return {}
     case 'REMOVE_RECORD':

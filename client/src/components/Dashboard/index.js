@@ -10,7 +10,7 @@ import Sidebar from './Sidebar'
 import Searchbar from './Searchbar'
 import Record from './Record'
 
-import { setViewRecordMode } from 'Actions/recordForm'
+import { setViewRecordMode, setAddRecordMode } from 'Actions/recordForm'
 
 import { 
   INIT_MODE,
@@ -22,6 +22,10 @@ import {
 const { Header, Footer, Content } = Layout
 
 class App extends Component {
+  addRecord = () => {
+    this.props.setAddRecordMode()
+  }
+
   displayRecord = (recordId) => {
     let record = this.props.records.find((record, id) => {
       return recordId === id
@@ -32,8 +36,11 @@ class App extends Component {
   render() {
     return (
       <div className="dashboard">
-        <Sidebar displayRecord={this.displayRecord} className="sidebar" />
-        
+        <Sidebar 
+          displayRecord={this.displayRecord} 
+          addRecord={this.addRecord} 
+          className="sidebar" 
+        />
         <Layout className="dashboard-content">
           <Header style={{ background: '#fff', padding: 0 }}>
             <Searchbar displayRecord={this.displayRecord} />
@@ -56,7 +63,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  setViewRecordMode: (record) => dispatch(setViewRecordMode(record))
+  setViewRecordMode: (record) => dispatch(setViewRecordMode(record)),
+  setAddRecordMode: () => dispatch(setAddRecordMode())
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App))
