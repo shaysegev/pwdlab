@@ -3,7 +3,6 @@ import { Layout } from 'antd'
 import Hero from './Hero'
 import Features from './Features'
 import './Homepage.less'
-import './themeOverides.less'
 import './responsive.less'
 
 const { Header, Footer, Content } = Layout
@@ -13,7 +12,7 @@ class App extends Component {
     return (
       <div className="App">
         <Layout>
-          <Header>
+          <Header className="header-home">
             <h1 className="header__logo">Pwdlab</h1>
           </Header>
           <Content>

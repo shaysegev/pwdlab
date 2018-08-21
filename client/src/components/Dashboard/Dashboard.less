@@ -7,13 +7,61 @@
   z-index: 1;
 }
 
+#root {
+  background: darken(@primary-color, 20%);
+}
+
+#root .loader {
+  color: @bright;
+  text-align: center;
+}
+
+.dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+}
 
 .dashboard-content {
-  margin-left: 200px;
+  margin-left: 300px;
+  overflow: auto;
+  height: 100vh;
 }
 
 .logo {
   padding: .7rem;
-  color: white;
-  background: #29214d;
+  color: @bright;
+  background: darken(@primary-color, 10%);
+}
+
+.record {
+  padding: 2.5rem;
+  background: @bright;
+}
+
+.record-header {
+  background: darken(@bright, 7%);
+  padding: .6rem 2.5rem;
+  border-bottom: 1px solid #c6c6c6;
+  border-top: 1px solid #c6c6c6;
+  button {
+    margin: 0 .3rem;
+  }
+}
+
+.record-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 50vh;
+}
+
+.record-add-button {
+  padding: .7rem 2.3rem;
+  height: auto;
+}
+
+.record-add-button--sidebar {
+  margin: 0 auto;
+  display: block;
 }
