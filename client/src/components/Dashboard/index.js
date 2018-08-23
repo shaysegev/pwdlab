@@ -7,7 +7,7 @@ import './Dashboard.less'
 import '../../styles/dashboard/responsive.less'
 
 import Sidebar from './Sidebar'
-import Searchbar from './Searchbar'
+import DashboardHeader from './DashboardHeader'
 import Record from './Record'
 
 import { setViewRecordMode, setAddRecordMode } from 'Actions/recordForm'
@@ -43,7 +43,7 @@ class App extends Component {
         />
         <Layout className="dashboard-content">
           <Header style={{ background: '#fff', padding: 0 }}>
-            <Searchbar displayRecord={this.displayRecord} />
+            <DashboardHeader displayRecord={this.displayRecord} />
           </Header>
           <Content>
             <Record 

@@ -1,11 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { Icon, Button, Input, AutoComplete } from 'antd';
+import { Icon, Button, Input, AutoComplete, message } from 'antd'
+import { startLogout } from 'Actions/auth'
 
-const Option = AutoComplete.Option;
+const Option = AutoComplete.Option
 
-class Searchbar extends React.Component {
+class DashboardHeader extends React.Component {
   state = {
     dataSource: [],
   }
@@ -54,6 +55,11 @@ class Searchbar extends React.Component {
     this.setState({ dataSource: result });
   }
 
+  logout = () => {
+    this.props.startLogout()
+    message.success('You have logged out successfully.', 2.5)
+  }
+
   render() {
     return (
       <div className="dashboard-header">
@@ -77,16 +83,32 @@ class Searchbar extends React.Component {
             />
           </AutoComplete>
         </div>
-        <div>LOGOUT/github</div>
+        <div>
+          <Button 
+            type="ghost" 
+            size="large" 
+            icon="github"
+            href="https://github.com/shaysegev/pwdlab"
+            target="_blank"
+          >Github</Button>
+          <Button 
+            type="ghost" 
+            size="large" 
+            icon="logout"
+            onClick={this.logout}
+          >Logout</Button>
+          </div>
       </div>
     );
   }
 }
 
-// todo github/logout icons
-
 const mapStateToProps = (state) => ({
   records: state.record,
 })
 
-export default connect(mapStateToProps)(Searchbar)
+const mapDispatchToProps = (dispatch) => ({
+  startLogout: () => dispatch(startLogout()),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardHeader)
