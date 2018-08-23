@@ -23,14 +23,8 @@ const renderApp = () => {
 
 ReactDOM.render(<LoadingPage />, document.getElementById('root'))
 
-/**
- * App initalised flag to avoid re-rendering app
- */
-let appInitialised = false
-
 const initApp = async () => {
   const res = await verifyToken()
-  store.subscribe(handleAuthChange)
 
   if (res.success) {
     store.dispatch(login(res))
@@ -39,14 +33,19 @@ const initApp = async () => {
       history.push('/dashboard')
     }
     renderApp()
-    store.dispatch(startSetRecords())
+    await store.dispatch(startSetRecords())
+    registerAuthChange()  
   } else {
-    store.dispatch(logout())
+    await store.dispatch(logout())
+    registerAuthChange()
     history.push('/')
     renderApp()
   }
+}
 
-  appInitialised = true
+function registerAuthChange() {
+  store.subscribe(handleAuthChange)
+  currentAuthState = store.getState().auth.uid
 }
 
 /**
@@ -60,7 +59,7 @@ let currentAuthState
 function handleAuthChange() {
   let previousAuthState = currentAuthState
   currentAuthState = store.getState().auth.uid
-  if (previousAuthState !== currentAuthState && appInitialised) {
+  if (previousAuthState !== currentAuthState) {
     reinitApp()
   }
 }
