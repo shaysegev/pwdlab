@@ -96,11 +96,16 @@ router.get('/test', async (req, res, next) => {
   // general user code testing
 })
 
+router.post('/logout', async (req, res, next) => {
+  const token = req.header('authorization');
+  try {
+    // Find delete token
+    await User.findByToken(token);
+    res.send({success: true})
+  } catch (e) {
+    res.send({success: true})
+  }
 
-
-router.post('/logout', authenticate, async (req, res, next) => {
-  await req.user.removeToken(req.token)
-  res.send({success: true})
 });
 
 module.exports = router;
