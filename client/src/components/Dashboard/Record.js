@@ -47,7 +47,7 @@ class Record extends React.Component {
         <h3>
           {!this.props.records.length ? 'No records found. Enter your first!' : 'Select/search for a record or add a new one.'}
         </h3>
-        <Button type="primary" className="record-add-button" onClick={this.addRecord} htmlType="submit">Add Record</Button>
+        <Button type="primary" className="record-add-button" onClick={this.props.addRecord} htmlType="submit">Add Record</Button>
       </div>
     )
   }

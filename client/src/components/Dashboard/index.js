@@ -38,7 +38,7 @@ class App extends Component {
       <div className="dashboard">
         <Sidebar 
           displayRecord={this.displayRecord} 
-          addRecord={this.addRecord} 
+          addRecord={this.addRecord}
           className="sidebar" 
         />
         <Layout className="dashboard-content">
@@ -46,7 +46,10 @@ class App extends Component {
             <Searchbar displayRecord={this.displayRecord} />
           </Header>
           <Content>
-            <Record displayRecord={this.displayRecord} />
+            <Record 
+              displayRecord={this.displayRecord}
+              addRecord={this.addRecord}
+            />
           </Content>
           <Footer style={{ textAlign: 'center' }}>
             TODO
