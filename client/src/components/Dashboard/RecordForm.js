@@ -5,9 +5,11 @@ import { withRouter } from 'react-router-dom'
 
 import RecordHeader from 'Components/Dashboard/RecordHeader'
 
+import { startDeleteRecord } from 'Actions/record'
+
 import {
+  setInitRecordMode,
   setViewRecordMode,
-  setAddRecordMode,
   setEditRecordMode
 } from 'Actions/recordForm'
 
@@ -20,18 +22,28 @@ class RecordForm extends React.Component {
     this.props.setEditRecordMode(this.props.record)
   }
 
-  deleteRecord = () => {
-    // todo
-  }
-
   handleSubmit = async (e) => {
     e.preventDefault()
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (err) {
         return message.error('Please fill all the required fields', 2.5)
       }
+      // Adding the record identifier (if available) to the form values
+      values._id = this.props.record ? this.props.record._id : undefined
       this.props.handleSubmit(values)
-    });
+    })
+  }
+
+  handleDeleteRecord = async () => {
+    message.loading('Deleting record', 2.5)
+    const res = await this.props.startDeleteRecord(this.props.record._id)
+    message.destroy()
+    if (res.success) {
+      message.success('Record deleted', 2.5)
+    this.props.setInitRecordMode()
+    } else {
+      message.error('Error deleting record', 2.5)
+    }
   }
 
   render() {
@@ -47,8 +59,8 @@ class RecordForm extends React.Component {
       <div>
         <RecordHeader
           handleSubmit={this.handleSubmit}
+          handleDeleteRecord={this.handleDeleteRecord}
           editRecord={this.editRecord}
-          deleteRecord={this.deleteRecord}
         />
         <div className="record">
           <Form layout="vertical">
@@ -128,8 +140,10 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
+  setInitRecordMode: () => dispatch(setInitRecordMode()),
   setViewRecordMode: (record) => dispatch(setViewRecordMode(record)),
-  setEditRecordMode: (record) => dispatch(setEditRecordMode(record))
+  setEditRecordMode: (record) => dispatch(setEditRecordMode(record)),
+  startDeleteRecord: (record) => dispatch(startDeleteRecord(record))
 })
 
 const WrappedRecord = Form.create({

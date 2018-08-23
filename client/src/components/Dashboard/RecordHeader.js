@@ -20,7 +20,7 @@ class RecordHeader extends React.Component {
          {this.props.mode === VIEW_RECORD_MODE && 
           <div>
             <Button type="primary" icon="form" onClick={this.props.editRecord}>Edit</Button>
-            <Button type="primary" icon="close" onClick={this.props.deleteRecord}>Delete</Button>
+            <Button type="primary" icon="close" onClick={this.props.handleDeleteRecord}>Delete</Button>
           </div>
         }
           {this.displaySaveButton() && 

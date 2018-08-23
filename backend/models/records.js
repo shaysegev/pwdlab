@@ -60,6 +60,22 @@ RecordSchema.pre('save', function (next) {
   next();
 });
 
+RecordSchema.pre('findOneAndUpdate', function () {
+  let record = this;
+  let recordValues = record._update.$set;
+  Object.keys(recordValues).filter((key, val) => {
+    if (key === '_id' || key === 'rid') {
+      return;
+    }
+
+    // Encrypting old/new values
+    recordValues[key] = cryptLib.encrypt(recordValues[key]);
+  })
+
+  this.update({},{ $set: recordValues });
+});
+
+
 const Crypt = mongoose.model('Records', RecordSchema);
 
 module.exports = Crypt

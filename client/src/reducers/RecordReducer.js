@@ -12,9 +12,22 @@ export default (state = recordsReducerDefaultState, action) => {
         action.record
       ]
     case 'EDIT_RECORD':
-      return {}
-    case 'REMOVE_RECORD':
-      return {}
+      return state.map((record) => {
+        if (record._id === action.record._id) {
+          // Update the edited record
+          return action.record
+        }
+
+        return record
+      })
+    case 'DELETE_RECORD':
+      return state.filter((record) => {
+        if (record._id !== action.recordId) {
+          // Add all items besides the deleted one
+          return record
+        }
+
+      })
     case 'SET_RECORDS':
       return action.records.map((record) => {
         recordKeysToDecrypt.forEach((key) => {

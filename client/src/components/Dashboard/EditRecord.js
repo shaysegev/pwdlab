@@ -5,7 +5,7 @@ import { message } from 'antd'
 
 import RecordForm from './RecordForm'
 import { startEditRecord } from 'Actions/record'
-
+import { setViewRecordMode } from 'Actions/recordForm'
 
 class EditRecord extends React.Component {
   state = {
@@ -13,7 +13,15 @@ class EditRecord extends React.Component {
   }
 
   handleEditRecord = async (record) => {
-    // todo
+    message.loading('Editing record', 2.5)
+    const res = await this.props.startEditRecord(record)
+    message.destroy()
+    if (res.success) {
+      message.success('Record updated', 2.5)
+      this.props.setViewRecordMode(record)
+    } else {
+      message.error('Error updating record', 2.5)
+    }
   }
 
   render() {
@@ -26,7 +34,8 @@ class EditRecord extends React.Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-    startEditRecord: (record) => dispatch(startEditRecord(record))
+    startEditRecord: (record) => dispatch(startEditRecord(record)),
+    setViewRecordMode: (record) => dispatch(setViewRecordMode(record))
 })
 
 export default withRouter(connect(undefined, mapDispatchToProps)(EditRecord))
