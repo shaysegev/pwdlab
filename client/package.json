@@ -5,6 +5,7 @@
   "dependencies": {
     "antd": "^3.6.4",
     "axios": "^0.18.0",
+    "generate-password": "^1.4.0",
     "node-rsa": "^1.0.0",
     "react": "^16.4.1",
     "react-app-rewire-less": "^2.1.2",
@@ -14,7 +15,8 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.4",
     "redux": "^4.0.0",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "zxcvbn": "^4.4.2"
   },
   "scripts": {
     "start": "react-app-rewired start",
@@ -30,7 +32,7 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "^Components(.*)$": "<rootDir>/src/components$1", 
+      "^Components(.*)$": "<rootDir>/src/components$1",
       "^Actions(.*)$": "<rootDir>/src/actions$1"
     }
   }

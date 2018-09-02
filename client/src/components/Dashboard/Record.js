@@ -27,7 +27,8 @@ class Record extends React.Component {
   }
 
   componentDidUpdate(props) {
-    if (props.records.length !== this.props.records.length) {
+    if (props.records.length !== this.props.records.length || props.records.length && this.state.initLoading) {
+      // If # of records has changed or we already had records in props (.e.g when auth state changed)
       this.setState({initLoading: false})
     }
   }

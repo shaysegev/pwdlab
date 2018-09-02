@@ -2,17 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Row, Button } from 'antd'
 
-import { 
-  VIEW_RECORD_MODE,
-  ADD_RECORD_MODE,
-  EDIT_RECORD_MODE,
-} from 'Actions/types/recordForm'
+import { VIEW_RECORD_MODE } from 'Actions/types/recordForm'
 
 class RecordHeader extends React.Component {
-  displaySaveButton() {
-    return this.props.mode === EDIT_RECORD_MODE || this.props.mode === ADD_RECORD_MODE
-  }
-
   render() {
     return (
       <div>
@@ -23,8 +15,12 @@ class RecordHeader extends React.Component {
             <Button type="primary" icon="close" onClick={this.props.handleDeleteRecord}>Delete</Button>
           </div>
         }
-          {this.displaySaveButton() && 
-          <Button type="primary" className="record-save" onClick={this.props.handleSubmit}>Save</Button>}
+          {this.props.isEditable() && 
+            <div>
+              <Button type="primary" className="record-save" onClick={this.props.cancelAction}>Cancel</Button>
+              <Button type="primary" className="record-save" onClick={this.props.handleSubmit}>Save</Button>
+            </div>
+          }
         </Row>
       </div>
     )

@@ -1,9 +1,10 @@
 import React from 'react'
-import { Form, Input, Tooltip, Icon, Row, Button, Spin, message } from 'antd'
+import { Form, Input, Tooltip, Row, Col, Button, Icon, Switch, message } from 'antd'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
 import RecordHeader from 'Components/Dashboard/RecordHeader'
+import PasswordHandler from 'Components/Dashboard/PasswordHandler'
 
 import { startDeleteRecord } from 'Actions/record'
 
@@ -13,13 +14,46 @@ import {
   setEditRecordMode
 } from 'Actions/recordForm'
 
-import { VIEW_RECORD_MODE } from 'Actions/types/recordForm'
+import { 
+  VIEW_RECORD_MODE,
+  ADD_RECORD_MODE,
+  EDIT_RECORD_MODE 
+} from 'Actions/types/recordForm'
 
 const FormItem = Form.Item;
 
-class RecordForm extends React.Component {  
+class RecordForm extends React.Component {
+  state = {
+    displayPassword: false,
+  }
+
+  cancelAction = () => {
+    if (this.props.mode === EDIT_RECORD_MODE) {
+      this.props.setViewRecordMode(this.props.record)
+    } else {
+      this.props.setInitRecordMode()
+    }
+  }
+
   editRecord = () => {
     this.props.setEditRecordMode(this.props.record)
+  }
+
+  isEditable = () => {
+    return this.props.mode === EDIT_RECORD_MODE || this.props.mode === ADD_RECORD_MODE
+  }
+
+  setPassword = (password) => {
+    this.props.form.setFieldsValue({ password })
+  }
+
+  copyPassword = () => {
+    navigator.clipboard.writeText(this.props.form.getFieldValue('password'))
+    message.success('Password copied to clipboard')
+  }
+
+  togglePasswordDisplay = () => {
+    this.setState({displayPassword: !this.state.displayPassword})
   }
 
   handleSubmit = async (e) => {
@@ -61,6 +95,8 @@ class RecordForm extends React.Component {
           handleSubmit={this.handleSubmit}
           handleDeleteRecord={this.handleDeleteRecord}
           editRecord={this.editRecord}
+          isEditable={this.isEditable}
+          cancelAction={this.cancelAction}
         />
         <div className="record">
           <Form layout="vertical">
@@ -94,24 +130,52 @@ class RecordForm extends React.Component {
                 <Input size="large" disabled={this.props.mode === VIEW_RECORD_MODE} />
               )}
             </FormItem>
+            <Row type="flex" justify="space-between" align="middle" className="record-password">
+              <Col xs={21}>
+                <FormItem
+                  {...formItemLayout}
+                  label="Password"
+                >
+                  {getFieldDecorator('password', {
+                    rules: [{
+                      required: true, message: 'A password is required',
+                    }],
+                  })(
+                    <Input
+                      size="large"
+                      disabled={this.props.mode === VIEW_RECORD_MODE}
+                      type={this.state.displayPassword ? 'text': 'password'}
+                    />
+                  )}
+                </FormItem>
+              </Col>
+              <Col xs={3} className="record-password-actions">
+                <Button
+                  type="primary"
+                  shape="circle"
+                  icon="copy"
+                  onClick={this.copyPassword}
+                />
+                <Switch 
+                  checkedChildren="Show"
+                  unCheckedChildren="Hide"
+                  onChange={this.togglePasswordDisplay}
+                />
+              </Col>
+            </Row>
+            {this.isEditable() &&
+              <PasswordHandler 
+                password={this.props.form.getFieldValue('password')}
+                setPassword={this.setPassword}
+              ></PasswordHandler>
+            }
             <FormItem
               {...formItemLayout}
-              label="Password"
-            >
-              {getFieldDecorator('password', {
-                rules: [{
-                  required: true, message: 'A password is required',
-                }],
-              })(
-                <Input size="large" disabled={this.props.mode === VIEW_RECORD_MODE} type="password" />
-              )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
+              className="record-notes"
               label={(
                 <span>
                   Notes&nbsp;
-                  <Tooltip title="Personal notes">
+                  <Tooltip title="Relevant notes">
                     <Icon type="question-circle-o" />
                   </Tooltip>
                 </span>
