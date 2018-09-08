@@ -72,7 +72,7 @@ UserSchema.methods.generateAuthToken = function() {
  */
 UserSchema.methods.generateSalt = function() {
   const user = this;
-  let salt = cryptLib.generateSalt();
+  let salt = cryptLib.generateUserSalt();
   salt = cryptLib.encryptSalt(salt);
 
   user.salt = salt;

@@ -51,6 +51,7 @@ router.post('/', async (req, res, next) => {
       key: pubkey
     });
   } catch(e) {
+    logger.error('Failed to create user: ' + e);
     res.status(400).send({success: false});
   }
 });
@@ -73,6 +74,7 @@ router.post('/login', async (req, res, next) => {
       key: pubkey
     });
   } catch (e) {
+    logger.error('Failed to login user: ' + e);
     res.status(400).send({success: false, msg: e});
   }
 });

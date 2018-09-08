@@ -32,7 +32,7 @@ const generateRSAKeys = () => {
 /**
  * Generate user's record salt for encryption
  */
-const generateuserSalt = () => {
+const generateUserSalt = () => {
   return cryptoNode.randomBytes(Math.ceil(16 / 2)).toString('hex').slice(0, 16);
 }
 
@@ -272,7 +272,7 @@ module.exports = {
   encrypt,
   decrypt,
   generateRSAKeys,
-  generateuserSalt,
+  generateUserSalt,
   getUserSalt,
   setUserSalt,
   encryptSalt,
