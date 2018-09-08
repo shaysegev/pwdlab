@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { encrypt } from '../lib/crypt'
 import { recordRoutes } from '../apiConfig'
+import { setInitRecordMode } from './recordForm'
 
 const addRecord = (record) => ({
   type: 'ADD_RECORD',
@@ -81,6 +82,7 @@ const startSetRecords = () => {
     try {
       const res = await axios.get(recordRoutes.default)
       if (res.data.success) {
+        dispatch(setInitRecordMode())
         dispatch(setRecords(res.data.records))
         return {success: true}
       }

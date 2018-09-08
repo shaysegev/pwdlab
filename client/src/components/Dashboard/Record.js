@@ -7,9 +7,9 @@ import ViewRecord from 'Components/Dashboard/ViewRecord'
 import AddRecord from 'Components/Dashboard/AddRecord'
 import EditRecord from 'Components/Dashboard/EditRecord'
 
-import { setInitRecordMode } from 'Actions/recordForm'
+import { setLoadingMode } from 'Actions/recordForm'
 
-import { 
+import {
   INIT_MODE,
   VIEW_RECORD_MODE,
   ADD_RECORD_MODE,
@@ -18,18 +18,18 @@ import {
 
 class Record extends React.Component {
   state = {
-    initLoading: true,
+    loadingApp: true,
     actionLoading: false,
   }
 
   componentDidMount() {
-    this.props.setInitRecordMode()
+    this.props.setLoadingMode()
   }
 
   componentDidUpdate(props) {
-    if (props.records.length !== this.props.records.length || props.records.length && this.state.initLoading) {
-      // If # of records has changed or we already had records in props (.e.g when auth state changed)
-      this.setState({initLoading: false})
+    if (props.mode === 'init' && this.state.loadingApp) {
+      // If initliased
+      this.setState({loadingApp: false})
     }
   }
 
@@ -54,7 +54,7 @@ class Record extends React.Component {
   }
 
   render() {
-    if (this.state.initLoading) {
+    if (this.state.loadingApp) {
       return this.displayLoading()
     }
 
@@ -86,7 +86,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  setInitRecordMode: () => dispatch(setInitRecordMode())
+  setLoadingMode: () => dispatch(setLoadingMode())
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Record))

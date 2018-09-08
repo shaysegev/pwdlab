@@ -1,4 +1,5 @@
 import { 
+  LOADING_MODE,
   INIT_MODE,
   VIEW_RECORD_MODE,
   ADD_RECORD_MODE,
@@ -7,6 +8,11 @@ import {
 
 export default (state = { record: null }, action) => {
   switch (action.type) {
+    case LOADING_MODE:
+     return {
+       record: null,
+       mode: LOADING_MODE
+     }
     case INIT_MODE:
       return {
         record: null,
