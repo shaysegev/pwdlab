@@ -41,7 +41,7 @@ class SignUpForm extends React.Component {
     return (
       <div>
         <h3>Sign up for free.</h3>
-        <Form onSubmit={this.handleSubmit} className="SignUp-form">
+        <Form onSubmit={this.handleSubmit} className="hero__signup--form">
           <FormItem>
             {getFieldDecorator('email', {
               rules: [{ required: true, message: 'Please input your email address!' }],
@@ -56,16 +56,15 @@ class SignUpForm extends React.Component {
               <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password" />
             )}
           </FormItem>
-          <FormItem>
-            <Button 
-              type="primary" 
-              htmlType="submit" 
-              className="signup-form-button"
-              loading={this.state.loading} 
-            >
-              Register
-            </Button>
-          </FormItem>
+          <Button 
+            type="primary"
+            size="large"
+            htmlType="submit"
+            className="hero__signup--form-button"
+            loading={this.state.loading}
+          >
+            Register
+          </Button>
           {this.state.alert && <Alert message={this.state.alert} type={this.state.alertType} />}
           </Form>
       </div>

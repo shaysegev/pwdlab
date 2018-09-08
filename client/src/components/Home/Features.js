@@ -3,6 +3,7 @@ import { Row, Col, Icon } from 'antd'
 
 const Features = () => (
   <div className="features__background">
+    <h1 className="features__main__title">Everything you need to manage your passwords.</h1>
     <Row type="flex" gutter={8} justify="space-between" className="features container">
       <Col md={8} className="features__desc">
         <Icon className="features__icon" type="check-circle-o" />

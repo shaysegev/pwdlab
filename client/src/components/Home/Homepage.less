@@ -1,10 +1,6 @@
 @import "~antd/dist/antd.less";
-@import "../../styles/themeOverideVariables.less";
-@import "../../styles/home/themeOverides.less";
-
-* {
-  z-index: 1;
-}
+@import "../../styles/themeOverrideVariables.less";
+@import "themeOverrides.less";
 
 .loader {
   text-align: center;
@@ -14,66 +10,114 @@
   padding: 0 50px;
 }
 
-.header__logo {
-  color: darken(@bright, 20%);
+.header__home {
+  border-top: 5px solid @fourth-color;
+  display: flex;
+  justify-content: space-between;
 }
 
-.hero__gradient {
-  background-image: linear-gradient(to right bottom, @secondary-color, @primary-color);
+.header__logo__name {
+  font-size: 1.8rem;
+  color: @secondary-color;
+  display: inline-block;
+}
+
+.header__logo__slogan {
+  display: inline-block;
+  margin-left: 5px;
+  color: @third-color;
+}
+
+.header__login__button {
+  margin-top: 1.35rem;
 }
 
 .hero {
-  padding: 3rem 0 9rem;
+  position: relative;
+  overflow: hidden;
+  background: @primary-color;
+  padding: 1rem 0 0;
 }
 
-.hero__forms {
+.hero:before {
+  content: '';
+  position: absolute;
+  top: 180px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  z-index: -1;
+  background: @secondary-color;
+  height: 600px;
+  width: 77%;
+  display: block;
+  border-radius: 1200px 1200px 0 0;
+}
+
+.hero__form {
   background: @bright;
   color: #222;
-  padding: 1.2rem 2.5rem;
+  padding: 2.2rem 2.5rem 3.5rem;
+  width: 500px;
+  margin: 6rem auto 0;
 }
 
 .hero__title {
   font-size: 3rem;
+  font-weight: 700;
   color: darken(@bright, 10%);
+  text-align: center;
 }
 
 .hero__subtitle {
   font-size: 1.6rem;
   color: darken(@bright, 10%);
+  text-align: center;
 }
 
-.tabs__forms {
-  display: block;
-    width: 45%;
-    float: left;
+.hero__signup--form-button {
+  width: 100%;
 }
 
-.SignUp-form {
-  display: flex;
-  flex-direction: column;
-}
+// .tabs__forms {
+//   display: block;
+//     width: 45%;
+//     float: left;
+// }
+
+// .hero__signup--form {
+//   display: flex;
+//   flex-direction: column;
+// }
 
 .features {
   padding-bottom: 3.5rem;
 }
 
 .features__background {
-  background: @bright;
+  background: lighten(@third-color, 3%);
+  padding: 0 4px;
+  border-top: 2px solid @fourth-color;
+  border-bottom: 2px solid @fourth-color;
 }
 
-.features__desc {
-  flex-grow: 1;
+.features__main__title {
+  padding: 4rem 0 3rem;
   text-align: center;
 }
 
 .features__icon {
   font-size: 4rem;
-  margin-top: 1em;
-  color: darken(@secondary-color, 10%);
+  color: @fourth-color;
 }
 
 .features__title {
   padding-top: .6rem;
+}
+
+.features__desc {
+  flex-grow: 1;
+  text-align: center;
 }
 
 .login-form-forgot {
