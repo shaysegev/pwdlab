@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 import { Layout } from 'antd'
 import './Dashboard.less'
-import '../../styles/dashboard/responsive.less'
+import './responsive.less'
 
 import Sidebar from './Sidebar'
 import DashboardHeader from './DashboardHeader'
