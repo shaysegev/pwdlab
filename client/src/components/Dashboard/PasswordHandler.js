@@ -41,6 +41,8 @@ class PasswordHandler extends React.Component {
   }
 
   componentWillMount() {
+    this.props.displayPassword()
+
     if (this.props.mode === ADD_RECORD_MODE) {
       this.generatePassword()
     } else {

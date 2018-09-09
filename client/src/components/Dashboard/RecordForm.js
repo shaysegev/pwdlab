@@ -56,6 +56,10 @@ class RecordForm extends React.Component {
     this.setState({displayPassword: !this.state.displayPassword})
   }
 
+  displayPassword = () => {
+    this.setState({displayPassword: true})
+  }
+
   handleSubmit = async (e) => {
     e.preventDefault()
     this.props.form.validateFieldsAndScroll((err, values) => {
@@ -167,6 +171,7 @@ class RecordForm extends React.Component {
               <PasswordHandler 
                 password={this.props.form.getFieldValue('password')}
                 setPassword={this.setPassword}
+                displayPassword={this.displayPassword}
               ></PasswordHandler>
             }
             <FormItem
