@@ -10,6 +10,7 @@ import EditRecord from 'Components/Dashboard/EditRecord'
 import { setLoadingMode } from 'Actions/recordForm'
 
 import {
+  LOADING_MODE,
   INIT_MODE,
   VIEW_RECORD_MODE,
   ADD_RECORD_MODE,
@@ -58,7 +59,10 @@ class Record extends React.Component {
       return this.displayLoading()
     }
 
-    if (this.props.mode === INIT_MODE && this.props.record === null) {
+    if (
+      (this.props.mode === INIT_MODE || this.props.mode === LOADING_MODE) && 
+      this.props.record === null
+    ) {
       return this.displayInitialScreen()
     }
 
