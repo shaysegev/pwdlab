@@ -134,26 +134,24 @@ class RecordForm extends React.Component {
                 <Input size="large" disabled={this.props.mode === VIEW_RECORD_MODE} />
               )}
             </FormItem>
-            <Row type="flex" justify="space-between" align="middle" className="record-password">
-              <Col xs={21}>
-                <FormItem
-                  {...formItemLayout}
-                  label="Password"
-                >
-                  {getFieldDecorator('password', {
-                    rules: [{
-                      required: true, message: 'A password is required',
-                    }],
-                  })(
-                    <Input
-                      size="large"
-                      disabled={this.props.mode === VIEW_RECORD_MODE}
-                      type={this.state.displayPassword ? 'text': 'password'}
-                    />
-                  )}
-                </FormItem>
-              </Col>
-              <Col xs={3} className="record-password-actions">
+            <div className="record-password">
+              <FormItem
+                {...formItemLayout}
+                label="Password"
+              >
+                {getFieldDecorator('password', {
+                  rules: [{
+                    required: true, message: 'A password is required',
+                  }],
+                })(
+                  <Input
+                    size="large"
+                    disabled={this.props.mode === VIEW_RECORD_MODE}
+                    type={this.state.displayPassword ? 'text': 'password'}
+                  />
+                )}
+              </FormItem>
+              <div className="record-password--actions">
                 <Button
                   type="primary"
                   shape="circle"
@@ -164,9 +162,10 @@ class RecordForm extends React.Component {
                   checkedChildren="Show"
                   unCheckedChildren="Hide"
                   onChange={this.togglePasswordDisplay}
+                  style={{marginLeft: "5px"}}
                 />
-              </Col>
-            </Row>
+              </div>
+            </div>
             {this.isEditable() &&
               <PasswordHandler 
                 password={this.props.form.getFieldValue('password')}

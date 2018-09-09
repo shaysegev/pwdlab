@@ -41,11 +41,7 @@ class Sidebar extends React.Component {
             >
               New Record
             </Button>
-            {!this.props.records.length ? (
-              <p>no records found</p>
-            ) : (
-              this.renderMenu()
-            )}
+            {this.props.records.length && this.renderMenu()}
         </Sider>
       </div>
     )

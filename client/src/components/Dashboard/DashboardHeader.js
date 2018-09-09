@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { Icon, Button, Input, AutoComplete, message } from 'antd'
+import { Popover, Modal, Icon, Button, Input, AutoComplete, message } from 'antd'
 import { startLogout } from 'Actions/auth'
 
 const Option = AutoComplete.Option
@@ -55,6 +55,22 @@ class DashboardHeader extends React.Component {
     this.setState({ dataSource: result });
   }
 
+  settings = () => {
+    Modal.info({
+      title: 'Work in progress',
+      content: (
+        <div>
+          <p>
+            This project is an MVP (Minimum Viable Product), 
+            and currently contains the minimum main functionality required by the application.
+          </p>
+          <p>You can view the project on <a href="https://github.com/shaysegev/pwdlab" target="_blank">Github</a></p>
+        </div>
+      ),
+      onOk() {},
+    });
+  }
+
   logout = () => {
     this.props.startLogout()
     message.success('You have logged out successfully.', 2.5)
@@ -84,20 +100,30 @@ class DashboardHeader extends React.Component {
           </AutoComplete>
         </div>
         <div>
-          <Button 
-            type="ghost" 
-            size="large" 
-            icon="github"
-            href="https://github.com/shaysegev/pwdlab"
-            target="_blank"
-          >Github</Button>
-          <Button 
-            type="ghost" 
-            size="large" 
-            icon="logout"
-            onClick={this.logout}
-          >Logout</Button>
-          </div>
+          <Popover 
+            placement="bottomRight"
+            overlayClassName="dashboard__popover"
+            content={
+              <div className="dashboard__popover__menu">
+                <a className="dashboard__popover__link" onClick={this.settings}>
+                  <Icon type="setting" /> 
+                  <span>Settings</span>
+                </a>
+                <a className="dashboard__popover__link" onClick={this.logout}>
+                  <Icon type="logout" /> 
+                  <span>Logout</span>
+                </a>
+              </div>
+            }
+            trigger="click"
+          >
+            <Button 
+              size="large"
+              shape="circle"
+              icon="ellipsis"
+            ></Button>
+          </Popover>
+        </div>
       </div>
     );
   }

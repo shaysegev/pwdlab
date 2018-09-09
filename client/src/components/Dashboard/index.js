@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-import { Layout } from 'antd'
+import { Layout, Button } from 'antd'
 import './Dashboard.less'
 import './responsive.less'
 
@@ -51,8 +51,15 @@ class App extends Component {
               addRecord={this.addRecord}
             />
           </Content>
-          <Footer style={{ textAlign: 'center' }}>
-            TODO
+          <Footer>
+            Made by Shay Segev | MIT license
+            <Button
+            shape="circle"
+            icon="github"
+            href="https://github.com/shaysegev/pwdlab"
+            target="_blank"
+            style={{marginLeft: '5px'}}
+            ></Button>
           </Footer>
         </Layout>
       </div>

@@ -1,10 +1,29 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Row, Button } from 'antd'
+import { Row, Button, Popconfirm } from 'antd'
 
 import { VIEW_RECORD_MODE } from 'Actions/types/recordForm'
 
 class RecordHeader extends React.Component {
+  state = {
+    deletePopupVisible: false
+  }
+
+  handlePopupVisibleChange = (deletePopupVisible) => {
+    if (!deletePopupVisible) {
+      this.setState({ deletePopupVisible })
+      return
+    }
+
+    if (this.state.condition) {
+      // Confirmed
+      this.props.handleDeleteRecord()
+    } else {
+      // Show the pre-delete popup
+      this.setState({ deletePopupVisible })
+    }
+  }
+
   render() {
     return (
       <div>
@@ -12,13 +31,23 @@ class RecordHeader extends React.Component {
          {this.props.mode === VIEW_RECORD_MODE && 
           <div>
             <Button type="primary" icon="form" onClick={this.props.editRecord}>Edit</Button>
-            <Button type="primary" icon="close" onClick={this.props.handleDeleteRecord}>Delete</Button>
+            <Popconfirm
+              title="Are you sure you wish to delete this record?"
+              placement="bottomRight"
+              visible={this.state.deletePopupVisible}
+              onVisibleChange={this.handlePopupVisibleChange}
+              onConfirm={this.props.handleDeleteRecord}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button type="danger" icon="close">Delete</Button>
+            </Popconfirm>
           </div>
         }
           {this.props.isEditable() && 
             <div>
-              <Button type="primary" className="record-save" onClick={this.props.cancelAction}>Cancel</Button>
-              <Button type="primary" className="record-save" onClick={this.props.handleSubmit}>Save</Button>
+              <Button type="danger" onClick={this.props.cancelAction}>Cancel</Button>
+              <Button type="primary" onClick={this.props.handleSubmit}>Save</Button>
             </div>
           }
         </Row>
