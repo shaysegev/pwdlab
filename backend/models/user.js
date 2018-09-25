@@ -35,7 +35,8 @@ const UserSchema = mongoose.Schema({
       type: String,
       required: true
     }
-  }]
+  }],
+  devices: [String]
 });
 
 /**
@@ -77,6 +78,19 @@ UserSchema.methods.generateSalt = function() {
 
   user.salt = salt;
 }
+
+/**
+ * Add user device info (agent/geo)
+ * 
+ * @param object device User device
+ */
+UserSchema.methods.addDevice = function(device) {
+  const user = this;
+
+  device = cryptLib.privateEncrypt(JSON.stringify(device));
+  user.devices.push(device);
+}
+
 /**
  * Removes token from database
  * 

@@ -4,6 +4,7 @@ const authenticate = require('../../middleware/authenticate');
 const User = require('../../models/user');
 const Crypt = require('../../models/crypt');
 const cryptLib = require('../../lib/crypt');
+const device = require('../../lib/device');
 const logger = require('../../logger');
 
 router.post('/me', authenticate, async (req, res, next) => {  
@@ -41,6 +42,10 @@ router.post('/', async (req, res, next) => {
       return res.status(400).send({success: false});
     }
 
+    // Adding user device information (geo/useragent)
+    const userDevice = device.getUserDevice(req);
+    await user.addDevice(userDevice);
+
     // After everything is successfully stored
     await user.save();
     
@@ -64,14 +69,19 @@ router.post('/login', async (req, res, next) => {
     if (!user) {
       res.status(400).send({success: false, msg: 'Incorrect email/password'});
     }
-    // Get user's public key
-    pubkey = await Crypt.getUserKey('pubkey', user);
+
+    const pubkey = await Crypt.getUserKey('pubkey', user);
+
+    const currentDevice = device.getUserDevice(req);
+    let newDevice = device.compareWithPreviousDevices(currentDevice, user.devices);
+    // TODO new device confirmation before sending response below and token
 
     res.header('authorization', user.token).send({
       success: true,
       email: user.email,
       _id: cryptLib.encryptId(user._id),
-      key: pubkey
+      key: pubkey,
+      deviceAlert: newDevice ? currentDevice : null
     });
   } catch (e) {
     logger.error('Failed to login user: ' + e);
@@ -93,6 +103,13 @@ router.post('/verifyToken', async (req, res, next) => {
     res.status(400).send({success: false});
   }
 });
+
+router.post('/authDevice', async (req, res, next) => {
+  // TODO with 2FA to increase security
+
+  // Once a user authenticates the device, we can add it to the list of auth devices
+  // And let the user through to the app
+})
 
 router.get('/test', async (req, res, next) => {
   // general user code testing
