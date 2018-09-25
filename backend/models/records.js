@@ -54,7 +54,7 @@ RecordSchema.pre('save', function (next) {
     }
 
     if (record.isModified(key)) {
-      record[key] = cryptLib.encrypt(record[key]);
+      record[key] = cryptLib.privateEncrypt(record[key]);
     }
   })
   next();
@@ -69,7 +69,7 @@ RecordSchema.pre('findOneAndUpdate', function () {
     }
 
     // Encrypting old/new values
-    recordValues[key] = cryptLib.encrypt(recordValues[key]);
+    recordValues[key] = cryptLib.privateEncrypt(recordValues[key]);
   })
 
   this.update({},{ $set: recordValues });

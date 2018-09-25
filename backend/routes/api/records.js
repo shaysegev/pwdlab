@@ -7,7 +7,7 @@ const logger = require('../../logger');
 
 router.post('/', authenticate, async (req, res) => {
   try {
-    let body = cryptLib.decrypt(req.body._);
+    let body = cryptLib.privateDecrypt(req.body._);
     body = JSON.parse(body);
 
     let record = new Record(body);
@@ -44,7 +44,7 @@ router.put('/:id', authenticate, async (req, res) => {
       return res.status(404).send();
     }
 
-    let body = cryptLib.decrypt(req.body._);
+    let body = cryptLib.privateDecrypt(req.body._);
     body = JSON.parse(body);
 
     // Getting the user's unique record Id

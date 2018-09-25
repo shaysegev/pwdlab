@@ -36,14 +36,34 @@ CryptSchema.methods.createKeys = async function(user) {
 };
 
 /**
- * Get user's public key
+ * Get user's key
  * 
+ * @param type privkey|pubkey
  * @param user
  * @throws error
- * @returns Base64 decode public key
+ * @returns RSA public/private key
  */
 CryptSchema.statics.getUserKey = async function(type, user) {
   const Crypt = this;
+
+  // If we already retrieved the user's keys
+  // then try to return early
+  if (type === 'pubkey') {
+    let publicKey = cryptLib.getPublicKey();
+    if (publicKey) {
+      return publicKey;
+    }
+  }
+
+  if (type === 'privkey') {
+    let privateKey = cryptLib.getPrivateKey();
+    if (privateKey) {
+      return privateKey;
+    }
+  }
+
+  // Continue to get user's keys from database
+
   const cid = cryptLib.getCryptId(user);
 
   const keys = await Crypt.findOne({ cid });
@@ -52,7 +72,21 @@ CryptSchema.statics.getUserKey = async function(type, user) {
     throw 'Error occurred, please try again later.';
   }
 
-  return cryptLib.base64Decode(keys[type]);
+  const pubkey = cryptLib.base64Decode(keys.pubkey);
+  cryptLib.setPublicKey(pubkey);
+
+  const privkey = cryptLib.base64Decode(keys.privkey);
+  cryptLib.setPrivateKey(privkey);
+
+  switch (type) {
+    case 'pubkey':
+      return pubkey;
+    case 'privkey':
+      return privkey;
+    default:
+      logger.error(`Unsupport key type: ${type}`);
+      throw new Error();
+  }
 };
 
 const Crypt = mongoose.model('CryptKey', CryptSchema);

@@ -26,9 +26,8 @@ const authenticate = async (req, res, next) => {
     // And add it to the crypt lib (accessible for models)
     cryptLib.setUserSalt(user.salt);
 
-    // Adding the user's private key to be accessible within the app
-    const privateKey = await Crypt.getUserKey('privkey', user);
-    cryptLib.setPrivateKey(privateKey);
+    // Requesting the user's private key to be accessible within the app
+    await Crypt.getUserKey('privkey', user);
     
     req.user = user;
     req.token = token;

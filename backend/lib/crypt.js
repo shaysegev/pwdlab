@@ -1,11 +1,17 @@
 const CryptoJS = require('crypto-js');
 const cryptoNode = require('crypto');
 const NodeRSA = require('node-rsa');
+const logger = require('../logger');
 
 /**
  * User's private RSA key
  */
 let privateKey = null;
+
+/**
+ * User's public RSA key
+ */
+let publicKey = null;
 
 /**
  * User's salt for records encryption
@@ -25,6 +31,9 @@ const generateRSAKeys = () => {
     privkey: keyPair.exportKey('pkcs8-private'),
     pubkey: keyPair.exportKey('pkcs8-public') 
   }
+
+  setPrivateKey(keys.privkey);
+  setPublicKey(keys.pubkey);
 
   return keys;
 }
@@ -56,7 +65,7 @@ const getUserSalt = () => {
 }
 
 /**
- * Add user's private RSA key
+ * Set user's private RSA key
  * 
  * @param string private key
  * @returns void
@@ -65,9 +74,38 @@ const setPrivateKey = (key) => {
   privateKey = key;
 }
 
-const encrypt = (text) => {
+/**
+ * Set user's public RSA key
+ * 
+ * @param string key
+ */
+const setPublicKey = (key) => {
+  publicKey = key;
+}
+
+/**
+ * Get user's private RSA key
+ */
+const getPrivateKey = () => {
+  return privateKey;
+}
+
+/**
+ * Get user's public RSA key
+ */
+const getPublicKey = () => {
+  return publicKey;
+}
+
+/**
+ * Encrypt with private key
+ * 
+ * @param string text
+ */
+const privateEncrypt = (text) => {
   if (!privateKey) {
-    throw 'Encryption key not added';
+    logger.error('Encryption key not added');
+    throw new Error('Encryption error');
   }
   
   let enc = cryptoNode.privateEncrypt({
@@ -77,9 +115,15 @@ const encrypt = (text) => {
   return enc.toString('base64');
 }
 
-const decrypt = (text) => {
+/**
+ * Decrypt with private key
+ * 
+ * @param string text
+ */
+const privateDecrypt = (text) => {
   if (!privateKey) {
-    throw 'Encryption key not added';
+    logger.error('Encryption key not added');
+    throw new Error('Encryption error');
   }
 
   let dec = cryptoNode.privateDecrypt({
@@ -87,6 +131,32 @@ const decrypt = (text) => {
     padding: cryptoNode.RSA_PKCS1_OAEP_PADDING
     }, Buffer.from(text, 'base64'));
   return dec.toString();
+}
+
+/**
+ * Encrypt with public key
+ * 
+ * @param string text
+ */
+const publicEncrypt = (text) => {
+  return cryptoNode.publicEncrypt({
+    key: publicKey,
+    padding: cryptoNode.RSA_PKCS1_OAEP_PADDING
+    }, Buffer.from(text)).toString('base64');
+}
+
+/**
+ * Decrypt with public key
+ * 
+ * @param string text
+ */
+const publicDecrypt = (text) => {
+  let dec = cryptoNode.publicDecrypt({
+    key: publicKey,
+    padding: cryptoNode.RSA_PKCS1_OAEP_PADDING
+    }, Buffer.from(text, 'base64')).toString();
+
+  return dec;
 }
 
 /**
@@ -259,18 +329,11 @@ const decryptUnique = ciphertext => {
   return decrypted.toString(CryptoJS.enc.Utf8);
 }
 
-// const decryptwithSalt = (ciphertext, salt) => {
-  // var bytes  = CryptoJS.AES.decrypt(ciphertext, salt);
-  // return bytes.toString(CryptoJS.enc.Utf8);
-// }
-
-// const encryptWithSalt = (text, salt) => {
-  // return CryptoJS.AES.encrypt(text, salt).toString();
-// }
-
 module.exports = {
-  encrypt,
-  decrypt,
+  privateEncrypt,
+  privateDecrypt,
+  publicEncrypt,
+  publicDecrypt,
   generateRSAKeys,
   generateUserSalt,
   getUserSalt,
@@ -286,4 +349,7 @@ module.exports = {
   encryptUnique,
   decryptUnique,
   setPrivateKey,
+  setPublicKey,
+  getPrivateKey,
+  getPublicKey,
 }
