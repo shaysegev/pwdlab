@@ -21,7 +21,7 @@ const CryptSchema = mongoose.Schema({
  * Creating RSA keys for user
  *
  * @param user
- * @returns RSA public key
+ * @return RSA public key
  */
 CryptSchema.methods.createKeys = async function(user) {
   const crypt = this;
@@ -41,7 +41,7 @@ CryptSchema.methods.createKeys = async function(user) {
  * @param type privkey|pubkey
  * @param user
  * @throws error
- * @returns RSA public/private key
+ * @return RSA public/private key
  */
 CryptSchema.statics.getUserKey = async function(type, user) {
   const Crypt = this;

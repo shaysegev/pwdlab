@@ -21,7 +21,7 @@ let userSalt = null;
 /**
  * Generate RSA keys
  * 
- * @returns RSA key
+ * @return {string[]} RSA keys
  */
 const generateRSAKeys = () => {
   const key = new NodeRSA({b: 1024});
@@ -40,6 +40,8 @@ const generateRSAKeys = () => {
 
 /**
  * Generate user's record salt for encryption
+ * 
+ * @return {string} User salt
  */
 const generateUserSalt = () => {
   return cryptoNode.randomBytes(Math.ceil(16 / 2)).toString('hex').slice(0, 16);
@@ -48,8 +50,7 @@ const generateUserSalt = () => {
 /**
  * Set user's record salt
  * 
- * @param string salt
- * @returns void
+ * @param {string} salt User salt
  */
 const setUserSalt = (salt) => {
   userSalt = salt;
@@ -58,7 +59,7 @@ const setUserSalt = (salt) => {
 /**
  * get user's record salt
  * 
- * @returns string salt
+ * @return {string} salt
  */
 const getUserSalt = () => {
   return userSalt;
@@ -67,8 +68,7 @@ const getUserSalt = () => {
 /**
  * Set user's private RSA key
  * 
- * @param string private key
- * @returns void
+ * @param {string} key Private key
  */
 const setPrivateKey = (key) => {
   privateKey = key;
@@ -77,7 +77,7 @@ const setPrivateKey = (key) => {
 /**
  * Set user's public RSA key
  * 
- * @param string key
+ * @param {string} key Public key
  */
 const setPublicKey = (key) => {
   publicKey = key;
@@ -85,6 +85,8 @@ const setPublicKey = (key) => {
 
 /**
  * Get user's private RSA key
+ * 
+ * @return {string} Private key
  */
 const getPrivateKey = () => {
   return privateKey;
@@ -92,6 +94,8 @@ const getPrivateKey = () => {
 
 /**
  * Get user's public RSA key
+ * 
+ * @return {string} Public key
  */
 const getPublicKey = () => {
   return publicKey;
@@ -100,7 +104,8 @@ const getPublicKey = () => {
 /**
  * Encrypt with private key
  * 
- * @param string text
+ * @param {string} text Text to encrypt
+ * @return {string} Encrypted text
  */
 const privateEncrypt = (text) => {
   if (!privateKey) {
@@ -118,7 +123,8 @@ const privateEncrypt = (text) => {
 /**
  * Decrypt with private key
  * 
- * @param string text
+ * @param {string} text Text to decrypt
+ * @return {string} Decrypted text
  */
 const privateDecrypt = (text) => {
   if (!privateKey) {
@@ -136,7 +142,8 @@ const privateDecrypt = (text) => {
 /**
  * Encrypt with public key
  * 
- * @param string text
+ * @param {string} text Text to encrypt
+ * @return {string} Encrypted text
  */
 const publicEncrypt = (text) => {
   return cryptoNode.publicEncrypt({
@@ -148,22 +155,21 @@ const publicEncrypt = (text) => {
 /**
  * Decrypt with public key
  * 
- * @param string text
+ * @param {string} text Text to decrypt
+ * @return {string} Decrypted text
  */
 const publicDecrypt = (text) => {
-  let dec = cryptoNode.publicDecrypt({
+  return cryptoNode.publicDecrypt({
     key: publicKey,
     padding: cryptoNode.RSA_PKCS1_OAEP_PADDING
     }, Buffer.from(text, 'base64')).toString();
-
-  return dec;
 }
 
 /**
  * Encrypt user record salt with app AES key
  * 
- * @param string userSalt
- * @returns string encrypted userSalt
+ * @param {string} userSalt User generated salt
+ * @return {string} encrypted userSalt
  */
 const encryptSalt = (userSalt) => {
   return encryptWithAppKey(userSalt);
@@ -172,8 +178,8 @@ const encryptSalt = (userSalt) => {
 /**
  * Decrypt user record salt with app AES key
  * 
- * @param string userSalt
- * @returns string decrypted userSalt
+ * @param {string} userSalt User generated salt
+ * @return {string} decrypted userSalt
  */
 const decryptSalt = (userSalt) => {
   return decryptWithAppKey(userSalt);
@@ -182,8 +188,8 @@ const decryptSalt = (userSalt) => {
 /**
  * Encrypt a Mongoose ID object
  * 
- * @param object ObjectId
- * @returns string encrypted _id
+ * @param {object} id Mongoose ObjectId
+ * @return {string} encrypted _id
  */
 const encryptId = (id) => {
   return encryptUnique(id.toHexString()).toString();
@@ -192,8 +198,8 @@ const encryptId = (id) => {
 /**
  * Decrypt user record salt with app AES key
  * 
- * @param object ObjectId
- * @returns string decrypted _id
+ * @param {object} id Mongoose ObjectId
+ * @return {string} decrypted _id
  */
 const decryptId = (id) => {
   return decryptUnique(id.toHexString());
@@ -202,21 +208,18 @@ const decryptId = (id) => {
 /**
  * Get AES app key from env
  * 
- * @returns ENV AES key
+ * @return {string} ENV AES key
  */
 const getAppAESKey = () => {
   return process.env.AES_KEY;
 }
 
-// const generateAESKey = () => {
-//   return cryptoNode.randomBytes(Math.ceil(16 / 2)).toString('hex').slice(0, 16);
-// }
-
 /**
  * Get/generate crypt id for storing public/private keys
  * 
- * @param Destructured user id/email
- * @returns cid (Crypt ID)
+ * @param {string} _id userId
+ * @param {string} email userEmail
+ * @return {string} cid (Crypt ID)
  */
 const getCryptId = ({ _id, email }) => {
   return CryptoJS.SHA256(_id + email).toString();
@@ -224,6 +227,10 @@ const getCryptId = ({ _id, email }) => {
 
 /**
  * Get/generate unique record id based on user's id/salt
+ * 
+ * @param  {string} _id userId
+ * @param  {string} userSalt user's generated salt
+ * @return {string} RecordId
  */
 const getRecordId = ({ _id, userSalt }) => {
   return CryptoJS.SHA256(_id + userSalt).toString();  
@@ -232,8 +239,8 @@ const getRecordId = ({ _id, userSalt }) => {
 /**
  * Encode Base64 string
  * 
- * @param string
- * @returns Base64 encoded string
+ * @param {string} string String to encode
+ * @return {string} Base64 encoded string
  */
 const base64Encode = string => {
   let buff = new Buffer(string);  
@@ -243,8 +250,8 @@ const base64Encode = string => {
 /**
  * Decode Base64 string
  * 
- * @param decoded string
- * @returns Base64 decoded string
+ * @param {string} string String to decode
+ * @return {string} Base64 decoded string
  */
 const base64Decode = string => {
   let buff = new Buffer(string, 'base64');  
@@ -254,8 +261,9 @@ const base64Decode = string => {
 /**
  * Encrypt AES by app env key
  * 
- * @param text
- * @returns AES encrypted text
+ * @param {string} text Text to encrypt
+ * @throws Error
+ * @return {string} AES encrypted text
  */
 const encryptWithAppKey = text => {
   try {
@@ -270,8 +278,8 @@ const encryptWithAppKey = text => {
 /**
  * Decrypt AES by app env key
  * 
- * @param ciphered text
- * @returns decrypted text
+ * @param {string} ciphertext ciphered text
+ * @return {string} decrypted text
  */
 const decryptWithAppKey = ciphertext => {
   var bytes  = CryptoJS.AES.decrypt(ciphertext, getAppAESKey());
@@ -281,7 +289,7 @@ const decryptWithAppKey = ciphertext => {
 /**
  * Generating a consistent key based on preconfigured iv and salt
  * 
- * @returns key object
+ * @return {object} key object
  */
 const getFixedCipherKey = () => {
   const salt = CryptoJS.enc.Hex.parse(process.env.AES_UNIQUE_SALT);
@@ -295,7 +303,7 @@ const getFixedCipherKey = () => {
 /**
  * Get env IV for consistent ciphering
  * 
- * @returns ENV IV
+ * @return {string} ENV IV
  */
 const getFixedIV = () => {
   return CryptoJS.enc.Hex.parse(process.env.AES_UNIQUE_IV);
@@ -304,7 +312,8 @@ const getFixedIV = () => {
 /**
  * Generating unique cipher based on preconfigured iv and salt
  * 
- * @returns Encrypted text
+ * @param {string} text Text to encrypt
+ * @return {string} Encrypted text
  */
 const encryptUnique = text => {
   return CryptoJS.AES.encrypt(text, getFixedCipherKey(), { 
@@ -317,7 +326,8 @@ const encryptUnique = text => {
 /**
  * Decrypting cipher based on preconfigured iv and salt
  * 
- * @returns Decrypted text 
+ * @param {string} text Text to decrypt
+ * @return {string} Decrypted text
  */
 const decryptUnique = ciphertext => {
   var decrypted = CryptoJS.AES.decrypt(ciphertext, getFixedCipherKey(), { 

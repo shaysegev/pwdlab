@@ -12,13 +12,6 @@ import Record from './Record'
 
 import { setViewRecordMode, setAddRecordMode } from 'Actions/recordForm'
 
-import { 
-  INIT_MODE,
-  VIEW_RECORD_MODE,
-  ADD_RECORD_MODE,
-  EDIT_RECORD_MODE
-} from 'Actions/types/recordForm'
-
 const { Header, Footer, Content } = Layout
 
 class App extends Component {
@@ -58,6 +51,7 @@ class App extends Component {
             icon="github"
             href="https://github.com/shaysegev/pwdlab"
             target="_blank"
+            rel="noopener noreferrer"
             style={{marginLeft: '5px'}}
             ></Button>
           </Footer>

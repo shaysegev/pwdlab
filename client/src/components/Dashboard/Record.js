@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Spin, Row } from 'antd'
+import { Button, Spin } from 'antd'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 

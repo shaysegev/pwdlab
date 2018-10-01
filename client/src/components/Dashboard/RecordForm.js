@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Input, Tooltip, Row, Col, Button, Icon, Switch, message } from 'antd'
+import { Form, Input, Tooltip, Button, Icon, Switch, message } from 'antd'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 

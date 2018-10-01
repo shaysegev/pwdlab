@@ -11,18 +11,28 @@ import { startSetRecords } from 'Actions/record'
 
 setAuthInterceptor()
 
+/**
+ * @const {jsx} App Application store and routes
+ */
 const App = (
   <Provider store={store}>
     <AppRouter />
   </Provider>
 )
 
+/**
+ * Render applcation
+ */
 const renderApp = () => {
   ReactDOM.render(App, document.getElementById('root'))
 }
 
 ReactDOM.render(<LoadingPage />, document.getElementById('root'))
 
+/**
+ * Init app
+ * handles user auth changes, redirects, and app rendering
+ */
 const initApp = async () => {
   const res = await verifyToken()
 
@@ -43,6 +53,9 @@ const initApp = async () => {
   }
 }
 
+/**
+ * Subscribing to auth changes in store
+ */
 function registerAuthChange() {
   store.subscribe(handleAuthChange)
   currentAuthState = store.getState().auth.uid
@@ -64,6 +77,9 @@ function handleAuthChange() {
   }
 }
 
+/**
+ * Re-init app (calls on auth change)
+ */
 function reinitApp() {
   initApp()
 }

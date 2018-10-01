@@ -26,7 +26,6 @@ export default (state = recordsReducerDefaultState, action) => {
           // Add all items besides the deleted one
           return record
         }
-
       })
     case 'SET_RECORDS':
       return action.records.map((record) => {

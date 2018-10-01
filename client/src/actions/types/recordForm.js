@@ -1,25 +1,25 @@
 /**
- * Records and state are initially loading
+ * @const {string} Records and state are initially loading
  */
 const LOADING_MODE = 'loading'
 
 /**
- * Record initialised mode state
+ * @const {string} Record initialised mode state
  */
 const INIT_MODE = 'init'
 
 /**
- * Record on view mode
+ * @const {string} Record on view mode
  */
 const VIEW_RECORD_MODE = 'view'
 
 /**
- * Adding new record
+ * @const {string} Adding new record
  */
 const ADD_RECORD_MODE = 'add'
 
 /**
- * Editing record
+ * @const {string} Editing record
  */
 const EDIT_RECORD_MODE = 'edit'
 

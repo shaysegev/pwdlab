@@ -13,7 +13,7 @@ let authTimeoutCounter;
  * Auth HTTP interceptor
  * Adding auth token to all requests
  * 
- * @returns object config
+ * @return {object} config
  */
 const setAuthInterceptor = () => {
   axios.interceptors.request.use(
@@ -43,8 +43,6 @@ const setAuthInterceptor = () => {
 
 /**
  * Init timeout to logout
- * 
- * @returns void
  */
 const initAuthIdleTimeout = () => {
   window.onload = setAuthTimer
@@ -58,8 +56,6 @@ const initAuthIdleTimeout = () => {
 
 /**
  * Clear and set auth timer on user activity
- * 
- * @returns void
  */
 const setAuthTimer = () => {
   clearTimeout(authTimeoutCounter)
@@ -75,7 +71,7 @@ const setAuthTimer = () => {
 /**
  * Verify user token and return user if verified
  * 
- * @returns object (user)
+ * @return {object} user/false if not verified
  */
 const verifyToken = async () => {
   const token = getToken()
@@ -95,8 +91,7 @@ const verifyToken = async () => {
 /**
  * Set auth token in local storage
  * 
- * @param token
- * @returns void
+ * @param {string} token JWT token
  */
 const setToken = (token) => {
   localStorage.setItem('authorization', token)
@@ -105,7 +100,7 @@ const setToken = (token) => {
 /**
  * Get auth token from local storage
  * 
- * @returns string token
+ * @return {string} token
  */
 const getToken = () => {
   return localStorage.getItem('authorization')
@@ -113,8 +108,6 @@ const getToken = () => {
 
 /**
  * Deletes token from local storage
- * 
- * @returns void
  */
 const deleteToken = () => {
   localStorage.removeItem('authorization')

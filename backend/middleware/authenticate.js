@@ -9,7 +9,7 @@ const cryptLib = require('./../lib/crypt');
  * @param res
  * @param next
  * 
- * @returns next/error
+ * @return next/error
  */
 const authenticate = async (req, res, next) => {
   const token = req.header('authorization');

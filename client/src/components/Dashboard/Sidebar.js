@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { Layout, Menu, Button, Icon } from 'antd'
+import { Layout, Menu, Button } from 'antd'
 
 const { Sider } = Layout
 

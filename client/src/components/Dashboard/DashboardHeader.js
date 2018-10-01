@@ -64,7 +64,7 @@ class DashboardHeader extends React.Component {
             This project is an MVP (Minimum Viable Product), 
             and currently contains the minimum main functionality required by the application.
           </p>
-          <p>You can view the project on <a href="https://github.com/shaysegev/pwdlab" target="_blank">Github</a></p>
+          <p>You can view the project on <a href="https://github.com/shaysegev/pwdlab" target="_blank" rel="noopener noreferrer">Github</a>.</p>
         </div>
       ),
       onOk() {},
