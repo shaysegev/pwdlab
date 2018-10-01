@@ -52,7 +52,7 @@ UserSchema.methods.toJSON = function() {
 /**
  * Generating JWT token for user
  * 
- * @returns JWT token
+ * @return JWT token
  */
 UserSchema.methods.generateAuthToken = function() {
   const user = this;
@@ -95,7 +95,7 @@ UserSchema.methods.addDevice = function(device) {
  * Removes token from database
  * 
  * @param token
- * @returns promise
+ * @return promise
  */
 UserSchema.methods.removeToken = function(token) {
   var user = this;
@@ -111,7 +111,7 @@ UserSchema.methods.removeToken = function(token) {
  * Find user by token
  * 
  * @param token
- * @returns user
+ * @return user
  * @throws error
  */
 UserSchema.statics.findByToken = async function(token) {
@@ -136,7 +136,7 @@ UserSchema.statics.findByToken = async function(token) {
     if (user) {
       await user.removeToken(token);
     }
-    throw new Error();
+    return Promise.reject('Session timed out');
   }
 };
 
@@ -145,32 +145,27 @@ UserSchema.statics.findByToken = async function(token) {
  * 
  * @param email
  * @param password
- * @returns user/false
+ * @return user/false
  */
-UserSchema.statics.findByCredentials = function({email, password}) {
+UserSchema.statics.findByCredentials = async function({email, password}) {
   var User = this;
   email = cryptLib.encryptUnique(email).toString();
 
-  return User.findOne({email}).then((user) => {
-    if (!user) {
-      return Promise.reject(`User not found`);
-    }
+  const user = await User.findOne({email});
+  if (!user) {
+    return;
+  }
 
-    return new Promise((resolve, reject) => {
-      bcrypt.compare(password, user.password, async (err, res) => {
-        if (res) {
-          user.token = user.generateAuthToken();
-          user.email = cryptLib.decryptUnique(user.email);
-          await user.save();
-          // todo find a neater way of doing it
-          user.email = cryptLib.decryptUnique(user.email);
-          resolve(user);
-        } else {
-          reject('Incorrect email/password');
-        }
-      });
-    });
-  });
+  const passwordMatch = await bcrypt.compare(password, user.password);
+
+  if (passwordMatch) {
+    user.token = user.generateAuthToken();
+    user.email = cryptLib.decryptUnique(user.email);
+    await user.save();
+    // todo find a neater way of doing it, as it encrypted the email again upon saving
+    user.email = cryptLib.decryptUnique(user.email);
+    return user;
+  }
 };
 
 /**
@@ -205,25 +200,14 @@ UserSchema.pre('save', function(next) {
  * @param next
  */
 UserSchema.post('save', function(error, doc, next) {
-  let msg;
-  
   if (!error) {
     next();
   }
 
   logger.error(`User save error: ${error}`);
-  
-  if (error.name === 'MongoError' && error.code === 11000) {
-    msg = 'Email already registered.';
-  } else if (error.errors && 'email' in error.errors) {
-    msg = error.errors.email.message
-  } else {
-    msg = 'Error occurred, please try again later.';
-  }
-  next({
-    success: false,
-    msg: msg
-  })
+ 
+  // Capture and return a generic error message (Security first)
+  next();
 });
 
 var User = mongoose.model('User', UserSchema);
