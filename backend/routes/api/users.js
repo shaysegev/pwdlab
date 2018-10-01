@@ -24,10 +24,9 @@ router.post('/me', authenticate, async (req, res, next) => {
 router.post('/', async (req, res, next) => {
   const body = _.pick(req.body, ['email', 'password']);
   try {
-    // todo check if email not exist
     let user = new User(body);
-    // const userExists = user.exists(); // todo
     const token = await user.generateAuthToken();
+    
     // generate salt for hashing/encryption
     user.generateSalt();
 
@@ -57,7 +56,7 @@ router.post('/', async (req, res, next) => {
     });
   } catch(e) {
     logger.error('Failed to create user: ' + e);
-    res.status(400).send({success: false});
+    res.status(400).send({success: false, msg: 'Error occurred, please try again later.'});
   }
 });
 
@@ -67,7 +66,7 @@ router.post('/login', async (req, res, next) => {
   try {
     const user = await User.findByCredentials(body);
     if (!user) {
-      res.status(400).send({success: false, msg: 'Incorrect email/password'});
+      return res.status(400).send({success: false, msg: 'Incorrect email/password'});
     }
 
     const pubkey = await Crypt.getUserKey('pubkey', user);
@@ -85,7 +84,7 @@ router.post('/login', async (req, res, next) => {
     });
   } catch (e) {
     logger.error('Failed to login user: ' + e);
-    res.status(400).send({success: false, msg: e});
+    res.status(400).send({success: false, msg: 'Error occurred, please try again later.'});
   }
 });
 
@@ -122,7 +121,7 @@ router.post('/logout', async (req, res, next) => {
     await User.findByToken(token);
     res.send({success: true})
   } catch (e) {
-    res.send({success: true})
+    res.send({success: true, msg: 'Session timed out'})
   }
 
 });

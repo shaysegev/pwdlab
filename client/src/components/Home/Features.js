@@ -17,8 +17,8 @@ const Features = () => (
       </Col>
       <Col md={8} className="features__desc">
         <Icon className="features__icon" type="calculator" />
-        <h2 className="features__title">Powerful Passwords</h2>
-        <p className="features__content">Store powerful and safe passwords for each website, so you won't have to remember them ever again.</p>
+        <h2 className="features__title">Master password</h2>
+        <p className="features__content">Store powerful and unique passwords for all your security needs, and access them with a single master password.</p>
       </Col>
     </Row>
   </div>

@@ -43,6 +43,14 @@ class App extends Component {
           <Footer>
             <p className="container">
               Made by Shay Segev | MIT license
+              <Button
+                shape="circle"
+                icon="github"
+                href="https://github.com/shaysegev/pwdlab"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{marginLeft: '5px'}}
+              ></Button>
             </p>
           </Footer>
         </Layout>

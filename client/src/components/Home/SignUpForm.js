@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { startSignUp } from 'Actions/auth'
 
-import { Form, Icon, Input, Button, Checkbox, Alert } from 'antd'
+import { Form, Icon, Input, Button, Alert } from 'antd'
 
 const FormItem = Form.Item
 
@@ -21,7 +21,7 @@ class SignUpForm extends React.Component {
         this.setState({ 
           loading: true,
           alertType: 'info',
-          alert: 'First sign up might take a while, please wait.'
+          alert: 'Creating account and encryption keys, please wait.'
         })
 
         const res = await this.props.startSignUp(values)
@@ -44,14 +44,14 @@ class SignUpForm extends React.Component {
         <Form onSubmit={this.handleSubmit} className="hero__signup--form">
           <FormItem>
             {getFieldDecorator('email', {
-              rules: [{ required: true, message: 'Please input your email address!' }],
+              rules: [{ required: true, type: 'email', message: 'Please input your email address' }],
             })(
               <Input prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="email" />
             )}
           </FormItem>
           <FormItem>
             {getFieldDecorator('password', {
-              rules: [{ required: true, message: 'Please input your Password!' }],
+              rules: [{ required: true, min: 6, message: 'Password must contain more than six characters' }],
             })(
               <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password" />
             )}

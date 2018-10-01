@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { startLogin, login } from 'Actions/auth'
 
-import { Form, Alert, Icon, Input, Button, Checkbox } from 'antd'
+import { Form, Alert, Icon, Input, Button, Modal } from 'antd'
 const FormItem = Form.Item
 
 class LoginForm extends React.Component {
@@ -22,12 +22,33 @@ class LoginForm extends React.Component {
         const res = await this.props.startLogin(values)
         this.setState({ loading: false })
         if (res.success) {
+          // TODO present an alert box if res.deviceAlert is not null
+          // Which means the user will have to authenticate the new device before proceeding
+          // Once a user authenticates the device, we can add it to the list of auth devices
+          // And let the user through
+          // Implements with 2FA
           this.setState({ alertType: 'success', alert: 'You have successfully logged in.' })
           this.props.login(res.user)
         } else {
           this.setState({ alertType: 'error', alert: res.msg })
         }        
       }
+    });
+  }
+
+  forgotPassword = () => {
+    Modal.info({
+      title: 'Work in progress',
+      content: (
+        <div>
+          <p>
+            This project is an MVP (Minimum Viable Product), 
+            and currently contains the minimum main functionality required by the application.
+          </p>
+          <p>You can view the project on <a href="https://github.com/shaysegev/pwdlab" target="_blank" rel="noopener noreferrer">Github</a>.</p>
+        </div>
+      ),
+      onOk() {},
     });
   }
 
@@ -39,14 +60,14 @@ class LoginForm extends React.Component {
         <Form onSubmit={this.handleSubmit} className="login-form">
           <FormItem>
             {getFieldDecorator('email', {
-              rules: [{ required: true, message: 'Please input your email address!' }],
+              rules: [{ required: true, type: 'email', message: 'Please input your email address!' }],
             })(
               <Input prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="email" />
             )}
           </FormItem>
           <FormItem>
             {getFieldDecorator('password', {
-              rules: [{ required: true, message: 'Please input your Password!' }],
+              rules: [{ required: true, min: 6, message: 'Password must contain more than six characters' }],
             })(
               <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password" />
             )}
@@ -60,7 +81,7 @@ class LoginForm extends React.Component {
               >
               Log in
             </Button>
-            <a className="login-form-forgot" href="">Forgot password?</a>
+            <a className="login-form-forgot" onClick={this.forgotPassword}>Forgot password?</a>
           </FormItem>
           {this.state.alert && <Alert message={this.state.alert} type={this.state.alertType} />}
         </Form>
